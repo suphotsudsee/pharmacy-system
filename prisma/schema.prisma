@@ -1,0 +1,327 @@
+// Pharmacy Inventory System - Prisma Schema
+// ระบบคลังยาสำหรับโรงพยาบาลทั่วประเทศ
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// ==================== ข้อมูลพื้นฐาน ====================
+
+// จังหวัด
+model Province {
+  id          Int       @id @default(autoincrement())
+  code        String    @unique // รหัสจังหวัด
+  name        String    // ชื่อจังหวัด
+  region      String    // ภูมิภาค (เหนือ, ใต้, อีสาน, กลาง, ตะวันออก, ตะวันตก)
+  hospitals   Hospital[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([region])
+}
+
+// ประเภทสถานบริการ
+model FacilityType {
+  id          Int       @id @default(autoincrement())
+  code        String    @unique // รหัสประเภท (เช่น รพ.ตำบล)
+  name        String    // ชื่อประเภท
+  description String?
+  hospitals   Hospital[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+// ระดับการบริการ
+model ServiceLevel {
+  id          Int       @id @default(autoincrement())
+  code        String    @unique
+  name        String
+  description String?
+  hospitals   Hospital[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+// ==================== โรงพยาบาล ====================
+
+model Hospital {
+  id                Int           @id @default(autoincrement())
+  hospCode          String        @unique // รหัสโรงพยาบาล (เช่น EA0010669)
+  name              String        // ชื่อโรงพยาบาล
+  shortName         String?       // ชื่อย่อ
+  
+  provinceId        Int?
+  province          Province?     @relation(fields: [provinceId], references: [id])
+  
+  facilityTypeId     Int?
+  facilityType       FacilityType? @relation(fields: [facilityTypeId], references: [id])
+  
+  serviceLevelId    Int?
+  serviceLevel      ServiceLevel? @relation(fields: [serviceLevelId], references: [id])
+  
+  googleSheetLink   String?       // ลิงก์ Google Sheets
+  
+  // ข้อมูลติดต่อ
+  address           String?
+  phone             String?
+  fax               String?
+  email             String?
+  
+  // สถานะ
+  isActive          Boolean       @default(true)
+  lastDataUpdate    DateTime?
+  
+  // Relations
+  drugInventories   DrugInventory[]
+  drugRequests      DrugRequest[]
+  drugTransactions  DrugTransaction[]
+  users             User[]
+  
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  @@index([hospCode])
+  @@index([provinceId])
+}
+
+// ==================== ข้อมูลยา ====================
+
+// หมวดยา
+model DrugCategory {
+  id          Int       @id @default(autoincrement())
+  code        String    @unique
+  name        String
+  description String?
+  drugs       Drug[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+// ยา
+model Drug {
+  id                Int       @id @default(autoincrement())
+  drugCode          String    @unique // รหัสยา
+  name              String    // ชื่อยา
+  genericName       String?   // ชื่อสามัญ
+  categoryId        Int?
+  category          DrugCategory? @relation(fields: [categoryId], references: [id])
+  
+  dosageForm        String?   // รูปแบบยา (เม็ด, น้ำ, ฉีด)
+  strength          String?   // ความแรง
+  unit              String    // หน่วย (เม็ด, ขวด, หลอด)
+  
+  // ข้อมูลการสั่งซื้อ
+  minStock          Int       @default(0)   // สต็อกขั้นต่ำ
+  maxStock          Int       @default(1000) // สต็อกสูงสุด
+  reorderPoint      Int       @default(50)   // จุดสั่งซื้อใหม่
+  
+  // ราคา
+  unitPrice         Float?
+  
+  isActive          Boolean   @default(true)
+  
+  // Relations
+  inventories       DrugInventory[]
+  requests          DrugRequestItem[]
+  transactions      DrugTransaction[]
+  
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([drugCode])
+  @@index([name])
+}
+
+// ==================== คลังยา ====================
+
+// สต็อกยาในแต่ละโรงพยาบาล
+model DrugInventory {
+  id              Int       @id @default(autoincrement())
+  
+  hospitalId      Int
+  hospital        Hospital  @relation(fields: [hospitalId], references: [id])
+  
+  drugId          Int
+  drug            Drug      @relation(fields: [drugId], references: [id])
+  
+  lotNumber       String?   // หมายเลขล็อต
+  expiryDate      DateTime? // วันหมดอายุ
+  
+  currentStock    Int       @default(0)  // จำนวนคงเหลือ
+  reservedStock   Int       @default(0)  // จำนวนจองไว้
+  availableStock  Int       @default(0)  // จำนวนที่ใช้ได้ (= current - reserved)
+  
+  location        String?   // ที่เก็บ (ชั้น, ห้อง)
+  
+  lastRestocked   DateTime? // วันที่รับเข้าล่าสุด
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@unique([hospitalId, drugId, lotNumber])
+  @@index([hospitalId])
+  @@index([drugId])
+  @@index([expiryDate])
+}
+
+// ==================== การเบิกยา ====================
+
+// ใบเบิกยา
+model DrugRequest {
+  id              Int               @id @default(autoincrement())
+  requestNumber   String            @unique // เลขที่ใบเบิก
+  
+  hospitalId      Int
+  hospital        Hospital          @relation(fields: [hospitalId], references: [id])
+  
+  requestDate     DateTime          @default(now()) // วันที่เบิก
+  requiredDate    DateTime?         // วันที่ต้องการ
+  
+  status          RequestStatus     @default(PENDING) // สถานะ
+  
+  // ผู้เบิก
+  requestedBy     String?
+  approvedBy      String?
+  
+  // หมายเหตุ
+  notes           String?
+  
+  items           DrugRequestItem[]
+  transactions     DrugTransaction[]
+  
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  @@index([hospitalId])
+  @@index([status])
+  @@index([requestDate])
+}
+
+// รายการยาในใบเบิก
+model DrugRequestItem {
+  id              Int       @id @default(autoincrement())
+  
+  requestId       Int
+  request         DrugRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  
+  drugId          Int
+  drug            Drug      @relation(fields: [drugId], references: [id])
+  
+  quantity        Int       // จำนวนที่เบิก
+  approvedQuantity Int?    // จำนวนที่อนุมัติ
+  
+  notes           String?
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([requestId])
+  @@index([drugId])
+}
+
+// ==================== ประวัติการเคลื่อนไหว ====================
+
+model DrugTransaction {
+  id              Int       @id @default(autoincrement())
+  
+  hospitalId      Int
+  hospital        Hospital  @relation(fields: [hospitalId], references: [id])
+  
+  drugId          Int
+  drug            Drug      @relation(fields: [drugId], references: [id])
+  
+  transactionType TransactionType
+  
+  // สำหรับการเบิก
+  requestId       Int?
+  request         DrugRequest? @relation(fields: [requestId], references: [id])
+  
+  quantity        Int       // จำนวน (+ รับเข้า, - เบิกออก)
+  previousStock   Int       // สต็อกก่อนหน้า
+  newStock        Int       // สต็อกใหม่
+  
+  lotNumber       String?   // หมายเลขล็อต
+  
+  notes           String?
+  
+  // ผู้ทำรายการ
+  performedBy     String?
+  
+  createdAt       DateTime  @default(now())
+
+  @@index([hospitalId])
+  @@index([drugId])
+  @@index([createdAt])
+}
+
+// ==================== ผู้ใช้งานระบบ ====================
+
+model User {
+  id              Int       @id @default(autoincrement())
+  username        String    @unique
+  password        String    // hashed password
+  
+  hospitalId      Int?
+  hospital        Hospital? @relation(fields: [hospitalId], references: [id])
+  
+  fullName        String
+  email           String?
+  role            UserRole
+  
+  isActive        Boolean   @default(true)
+  lastLogin       DateTime?
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([username])
+  @@index([hospitalId])
+}
+
+// ==================== Enums ====================
+
+enum RequestStatus {
+  PENDING      // รออนุมัติ
+  APPROVED     // อนุมัติแล้ว
+  PROCESSING   // กำลังเตรียม
+  COMPLETED    // เสร็จสิ้น
+  CANCELLED    // ยกเลิก
+  REJECTED     // ปฏิเสธ
+}
+
+enum TransactionType {
+  RECEIPT      // รับเข้า
+  DISPENSE     // เบิกออก
+  ADJUSTMENT   // ปรับปรุง
+  RETURN       // คืน
+  EXPIRED      // หมดอายุ
+  DAMAGED      // เสียหาย
+}
+
+enum UserRole {
+  ADMIN        // ผู้ดูแลระบบ
+  PHARMACIST   // เภสัชกร
+  STAFF        // เจ้าหน้าที่
+  VIEWER       // ผู้ดูเท่านั้น
+}
+
+// ==================== Audit Log ====================
+
+model AuditLog {
+  id          Int       @id @default(autoincrement())
+  action      String    // การกระทำ
+  entityType  String    // ประเภท entity
+  entityId    Int       // ID ของ entity
+  userId      Int?      // ผู้ทำ
+  details     String?   // รายละเอียด
+  ipAddress   String?
+  createdAt   DateTime  @default(now())
+
+  @@index([entityType, entityId])
+  @@index([createdAt])
+}

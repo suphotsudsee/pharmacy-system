@@ -1,65 +1,101 @@
-import Image from "next/image";
-
-export default function Home() {
+export default function HomePage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <div className="max-w-7xl mx-auto px-4 py-8">
+      {/* Hero Section */}
+      <div className="bg-gradient-to-r from-blue-600 to-blue-800 rounded-xl shadow-xl p-8 mb-8 text-white">
+        <h1 className="text-4xl font-bold mb-4">🏥 ระบบคลังยา</h1>
+        <p className="text-xl opacity-90 mb-6">
+          ระบบจัดการคลังยาสำหรับโรงพยาบาลทั่วประเทศไทย
+        </p>
+        <div className="flex flex-wrap gap-4">
+          <a href="/dashboard" className="bg-white text-blue-700 px-6 py-3 rounded-lg font-medium hover:bg-gray-100">
+            📊 Dashboard
+          </a>
+          <a href="/hospitals" className="bg-blue-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-400">
+            🏨 ดูโรงพยาบาล
+          </a>
+        </div>
+      </div>
+
+      {/* Features */}
+      <div className="grid md:grid-cols-3 gap-6 mb-8">
+        <div className="bg-white rounded-xl shadow p-6">
+          <div className="text-4xl mb-4">🏥</div>
+          <h2 className="text-xl font-bold mb-2">จัดการโรงพยาบาล</h2>
+          <p className="text-gray-600 mb-4">
+            รองรับโรงพยาบาลทั่วประเทศ จัดกลุ่มตามจังหวัดและภูมิภาค
           </p>
+          <a href="/hospitals" className="text-blue-600 hover:underline">ดูรายการ →</a>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        <div className="bg-white rounded-xl shadow p-6">
+          <div className="text-4xl mb-4">💊</div>
+          <h2 className="text-xl font-bold mb-2">จัดการยา</h2>
+          <p className="text-gray-600 mb-4">
+            จัดการรายการยา หมวดหมู่ และข้อมูลการสั่งซื้อ
+          </p>
+          <a href="/drugs" className="text-blue-600 hover:underline">ดูรายการ →</a>
         </div>
-      </main>
+
+        <div className="bg-white rounded-xl shadow p-6">
+          <div className="text-4xl mb-4">📦</div>
+          <h2 className="text-xl font-bold mb-2">คลังยา</h2>
+          <p className="text-gray-600 mb-4">
+            ติดตามสต็อกยา แจ้งเตือนยาใกล้หมด และยาใกล้หมดอายุ
+          </p>
+          <a href="/inventory" className="text-blue-600 hover:underline">ดูรายการ →</a>
+        </div>
+
+        <div className="bg-white rounded-xl shadow p-6">
+          <div className="text-4xl mb-4">📝</div>
+          <h2 className="text-xl font-bold mb-2">ใบเบิกยา</h2>
+          <p className="text-gray-600 mb-4">
+            สร้างและติดตามใบเบิกยา อนุมัติและจัดส่ง
+          </p>
+          <a href="/requests" className="text-blue-600 hover:underline">ดูรายการ →</a>
+        </div>
+
+        <div className="bg-white rounded-xl shadow p-6">
+          <div className="text-4xl mb-4">📊</div>
+          <h2 className="text-xl font-bold mb-2">Dashboard</h2>
+          <p className="text-gray-600 mb-4">
+            สรุปสถิติ กราฟ และการแจ้งเตือน
+          </p>
+          <a href="/dashboard" className="text-blue-600 hover:underline">ดู Dashboard →</a>
+        </div>
+
+        <div className="bg-white rounded-xl shadow p-6">
+          <div className="text-4xl mb-4">🌐</div>
+          <h2 className="text-xl font-bold mb-2">ทั่วประเทศ</h2>
+          <p className="text-gray-600 mb-4">
+            รองรับโรงพยาบาลทุกภูมิภาคของประเทศไทย
+          </p>
+          <a href="/hospitals" className="text-blue-600 hover:underline">ดูแผนที่ →</a>
+        </div>
+      </div>
+
+      {/* Stats */}
+      <div className="bg-white rounded-xl shadow p-6">
+        <h2 className="text-2xl font-bold mb-4">📈 สถิติระบบ</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="text-center p-4 bg-blue-50 rounded-lg">
+            <div className="text-3xl font-bold text-blue-700">1,000+</div>
+            <div className="text-gray-600">โรงพยาบาล</div>
+          </div>
+          <div className="text-center p-4 bg-green-50 rounded-lg">
+            <div className="text-3xl font-bold text-green-700">77</div>
+            <div className="text-gray-600">จังหวัด</div>
+          </div>
+          <div className="text-center p-4 bg-purple-50 rounded-lg">
+            <div className="text-3xl font-bold text-purple-700">5</div>
+            <div className="text-gray-600">ภูมิภาค</div>
+          </div>
+          <div className="text-center p-4 bg-orange-50 rounded-lg">
+            <div className="text-3xl font-bold text-orange-700">24/7</div>
+            <div className="text-gray-600">บริการตลอดเวลา</div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

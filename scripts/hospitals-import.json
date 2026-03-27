@@ -1,0 +1,492 @@
+[
+  {
+    "hospCode": "EA0010669",
+    "name": "โรงพยาบาลสรรพสิทธิประสงค์",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010954",
+    "name": "โรงพยาบาลวารินชำราบ",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0021984",
+    "name": "โรงพยาบาล 50 พรรษา มหาวชิราลงกรณ",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0011443",
+    "name": "โรงพยาบาลสมเด็จพระยุพราชเดชอุดม",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010951",
+    "name": "โรงพยาบาลตระการพืชผล",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0024032",
+    "name": "โรงพยาบาลนาตาล",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0027976",
+    "name": "โรงพยาบาลเหล่าเสือโก้ก",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0027967",
+    "name": "โรงพยาบาลสว่างวีระวงศ์",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0027968",
+    "name": "โรงพยาบาลน้ำขุ่น",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0024821",
+    "name": "โรงพยาบาลนาเยีย",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010961",
+    "name": "โรงพยาบาลสิรินธร",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010959",
+    "name": "โรงพยาบาลสำโรง",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010944",
+    "name": "โรงพยาบาลศรีเมืองใหม่",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010953",
+    "name": "โรงพยาบาลม่วงสามสิบ",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010950",
+    "name": "โรงพยาบาลบุณฑริก",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010949",
+    "name": "โรงพยาบาลน้ำยืน",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010948",
+    "name": "โรงพยาบาลนาจะหลวย",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010962",
+    "name": "โรงพยาบาลทุ่งศรีอุดม",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010957",
+    "name": "โรงพยาบาลตาลสุม",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010960",
+    "name": "โรงพยาบาลดอนมดแดง",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010945",
+    "name": "โรงพยาบาลโขงเจียม",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010947",
+    "name": "โรงพยาบาลเขมราฐ",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010952",
+    "name": "โรงพยาบาลกุดข้าวปุ้น",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010956",
+    "name": "โรงพยาบาลพิบูลมังสาหาร",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010958",
+    "name": "โรงพยาบาลโพธิ์ไทร",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010700",
+    "name": "โรงพยาบาลศรีสะเกษ",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010929",
+    "name": "โรงพยาบาลกันทรลักษ์",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010935",
+    "name": "โรงพยาบาลอุทุมพรพิสัย",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010930",
+    "name": "โรงพยาบาลขุขันธ์",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010933",
+    "name": "โรงพยาบาลขุนหาญ",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010934",
+    "name": "โรงพยาบาลราษีไศล",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010928",
+    "name": "โรงพยาบาลกันทรารมย์",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010941",
+    "name": "โรงพยาบาลน้ำเกลี้ยง",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010938",
+    "name": "โรงพยาบาลโนนคูณ",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010936",
+    "name": "โรงพยาบาลบึงบูรพ์",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0023125",
+    "name": "โรงพยาบาลเบญจลักษ์เฉลิมพระเกียรติ 80 พรรษา",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010932",
+    "name": "โรงพยาบาลปรางค์กู่",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0028014",
+    "name": "โรงพยาบาลพยุห์",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0028015",
+    "name": "โรงพยาบาลโพธิ์ศรีสุวรรณ",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010931",
+    "name": "โรงพยาบาลไพรบึง",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010942",
+    "name": "โรงพยาบาลภูสิงห์",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010943",
+    "name": "โรงพยาบาลเมืองจันทร์",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010927",
+    "name": "โรงพยาบาลยางชุมน้อย",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010940",
+    "name": "โรงพยาบาลวังหิน",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010939",
+    "name": "โรงพยาบาลศรีรัตนะ",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0028016",
+    "name": "โรงพยาบาลศิลาลาด",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010937",
+    "name": "โรงพยาบาลห้วยทับทัน",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010701",
+    "name": "โรงพยาบาลยโสธร",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010966",
+    "name": "โรงพยาบาลป่าติ้ว",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010968",
+    "name": "โรงพยาบาลค้อวัง",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010967",
+    "name": "โรงพยาบาลมหาชนะชัย",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010969",
+    "name": "โรงพยาบาลไทยเจริญ",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010963",
+    "name": "โรงพยาบาลทรายมูล",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010965",
+    "name": "โรงพยาบาลคำเขื่อนแก้ว",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010964",
+    "name": "โรงพยาบาลกุดชุม",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0011444",
+    "name": "โรงพยาบาลสมเด็จพระยุพราชเลิงนกทา",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010703",
+    "name": "โรงพยาบาลอำนาจเจริญ",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010989",
+    "name": "โรงพยาบาลหัวตะพาน",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010987",
+    "name": "โรงพยาบาลพนา",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010988",
+    "name": "โรงพยาบาลเสนางคนิคม",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010990",
+    "name": "โรงพยาบาลลืออำนาจ",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010986",
+    "name": "โรงพยาบาลปทุมราชวงศา",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010985",
+    "name": "โรงพยาบาลชานุมาน",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0010712",
+    "name": "โรงพยาบาลมุกดาหาร",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0011118",
+    "name": "โรงพยาบาลหนองสูง",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0011116",
+    "name": "โรงพยาบาลคำชะอี",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0011117",
+    "name": "โรงพยาบาลหว้านใหญ่",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0011113",
+    "name": "โรงพยาบาลนิคมคำสร้อย",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0011114",
+    "name": "โรงพยาบาลดอนตาล",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  },
+  {
+    "hospCode": "EA0011115",
+    "name": "โรงพยาบาลดงหลวง",
+    "shortName": null,
+    "googleSheetLink": null,
+    "facilityType": "รพ.สต."
+  }
+]

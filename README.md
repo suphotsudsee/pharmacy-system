@@ -1,36 +1,211 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# คู่มือการใช้งานระบบคลังยา
 
-## Getting Started
+## สารบัญ
+1. [ภาพรวมระบบ](#ภาพรวมระบบ)
+2. [การติดตั้งและรันโปรแกรม](#การติดตั้งและรันโปรแกรม)
+3. [การใช้งานระบบ](#การใช้งานระบบ)
+4. [API Documentation](#api-documentation)
+5. [การนำเข้าข้อมูล](#การนำเข้าข้อมูล)
 
-First, run the development server:
+---
+
+## ภาพรวมระบบ
+
+ระบบคลังยาเป็นระบบจัดการคลังยาสำหรับโรงพยาบาลทั่วประเทศไทย รองรับ:
+- ✅ จัดการโรงพยาบาลทั่วประเทศ
+- ✅ จัดการรายการยาและหมวดหมู่
+- ✅ ติดตามสต็อกยา
+- ✅ จัดการใบเบิกยา
+- ✅ แจ้งเตือนยาใกล้หมดและยาใกล้หมดอายุ
+- ✅ Dashboard สถิติและการแจ้งเตือน
+
+### เทคโนโลยีที่ใช้
+- **Frontend/Backend**: Next.js 15+ (App Router)
+- **Database**: SQLite (สามารถเปลี่ยนเป็น PostgreSQL ได้)
+- **ORM**: Prisma
+- **Styling**: Tailwind CSS
+
+---
+
+## การติดตั้งและรันโปรแกรม
+
+### ข้อกำหนด
+- Node.js 18+
+- npm หรือ yarn
+
+### ขั้นตอนติดตั้ง
 
 ```bash
+# 1. เข้าโฟลเดอร์โปรเจกต์
+cd C:\fullstack\drugstoreubon\pharmacy-system
+
+# 2. ติดตั้ง dependencies
+npm install
+
+# 3. สร้างฐานข้อมูล
+npx prisma db push
+
+# 4. รันโปรแกรม
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+โปรแกรมจะทำงานที่ `http://localhost:9401`
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## การใช้งานระบบ
 
-## Learn More
+### 1. Dashboard (หน้าแรก)
+- แสดงสถิติรวมของระบบ
+- แสดงการแจ้งเตือนยาใกล้หมดและยาใกล้หมดอายุ
+- แสดงรายการใบเบิกยาล่าสุด
 
-To learn more about Next.js, take a look at the following resources:
+### 2. โรงพยาบาล (Hospitals)
+- ดูรายการโรงพยาบาลทั้งหมด
+- ค้นหาโรงพยาบาล
+- เพิ่มโรงพยาบาลใหม่
+- ดูรายละเอียดและคลังยาของแต่ละโรงพยาบาล
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 3. รายการยา (Drugs)
+- ดูรายการยาทั้งหมด
+- ค้นหายา
+- เพิ่มยาใหม่ (รหัส, ชื่อ, รูปแบบ, หน่วย, สต็อกขั้นต่ำ, จุดสั่งซื้อใหม่)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 4. คลังยา (Inventory)
+- ดูสต็อกยาในแต่ละโรงพยาบาล
+- กรองตามโรงพยาบาล
+- กรองยาใกล้หมด
+- กรองยาใกล้หมดอายุ (6 เดือน)
+- เพิ่ม/ปรับปรุงสต็อกยา
 
-## Deploy on Vercel
+### 5. ใบเบิกยา (Requests)
+- ดูรายการใบเบิกยาทั้งหมด
+- สร้างใบเบิกยาใหม่
+- กรองตามโรงพยาบาลและสถานะ
+- อนุมัติ/ปฏิเสธใบเบิกยา
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 6. นำเข้าข้อมูล (Import)
+- นำเข้าโรงพยาบาลจากไฟล์ Excel
+- รองรับรูปแบบคอลัมน์หลากหลาย
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## API Documentation
+
+### Hospitals
+```
+GET    /api/hospitals          # ดึงรายการโรงพยาบาล
+POST   /api/hospitals          # สร้างโรงพยาบาลใหม่
+GET    /api/hospitals/[id]     # ดึงข้อมูลโรงพยาบาล
+PUT    /api/hospitals/[id]     # อัปเดตข้อมูลโรงพยาบาล
+DELETE /api/hospitals/[id]     # ลบโรงพยาบาล (soft delete)
+```
+
+### Drugs
+```
+GET    /api/drugs              # ดึงรายการยา
+POST   /api/drugs              # สร้างยาใหม่
+```
+
+### Inventory
+```
+GET    /api/inventory          # ดึงข้อมูลคลังยา
+POST   /api/inventory          # เพิ่ม/ปรับปรุงสต็อกยา
+```
+
+### Requests
+```
+GET    /api/requests           # ดึงรายการใบเบิกยา
+POST   /api/requests           # สร้างใบเบิกยาใหม่
+GET    /api/requests/[id]      # ดึงข้อมูลใบเบิกยา
+PUT    /api/requests/[id]      # อัปเดตสถานะใบเบิกยา
+```
+
+### Dashboard
+```
+GET    /api/dashboard/stats    # ดึงสถิติ Dashboard
+```
+
+### Import
+```
+POST   /api/import/excel       # นำเข้าข้อมูลจาก Excel
+```
+
+---
+
+## การนำเข้าข้อมูล
+
+### รูปแบบไฟล์ Excel
+ไฟล์ Excel ควรมีคอลัมน์ดังนี้:
+
+| คอลัมน์ | คำอธิบาย | จำเป็น |
+|---------|----------|--------|
+| Hosp_Code / รหัส / code | รหัสโรงพยาบาล | ✅ |
+| Hosp_Name / ชื่อ / name | ชื่อโรงพยาบาล | ✅ |
+| short_name / ชื่อย่อ | ชื่อย่อ | ❌ |
+| link / ลิงก์ | Google Sheets link | ❌ |
+| ประเภทสถานบริการ / type | ประเภทโรงพยาบาล | ❌ |
+
+### ตัวอย่างไฟล์
+```
+Hosp_Code | Hosp_Name                    | ประเภทสถานบริการ
+EA0010669 | รพ.สต.ตาลสุม                | รพ.สต.
+EA0010954 | รพ.สต.โนนสะอาด              | รพ.สต.
+```
+
+---
+
+## การขยายระบบ
+
+### เพิ่มจังหวัดใหม่
+```typescript
+// API: POST /api/provinces
+{
+  "code": "BK",
+  "name": "กรุงเทพมหานคร",
+  "region": "กลาง"
+}
+```
+
+### เปลี่ยนเป็น PostgreSQL
+```env
+# .env
+DATABASE_URL="postgresql://user:password@localhost:5432/pharmacy?schema=public"
+```
+
+```bash
+npx prisma migrate dev
+```
+
+---
+
+## การแก้ไขปัญหา
+
+### ปัญหา: ฐานข้อมูลไม่ sync
+```bash
+npx prisma db push --force-reset
+```
+
+### ปัญหา: ไม่เห็นข้อมูลใหม่
+- รีเฟรชหน้าเว็บ (F5)
+- ตรวจสอบ Database URL ใน .env
+
+### ปัญหา: Build error
+```bash
+# Clear cache
+rm -rf .next node_modules
+npm install
+npm run build
+```
+
+---
+
+## ติดต่อและสนับสนุน
+
+หากมีปัญหาหรือต้องการความช่วยเหลือ กรุณาติดต่อทีมพัฒนา
+
+---
+
+**เวอร์ชัน**: 1.0.0  
+**วันที่สร้าง**: 27 มีนาคม 2026  
+**สร้างโดย**: Team Director & Development Team
