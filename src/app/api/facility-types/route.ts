@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/auth'
 import { prisma } from '@/lib/prisma'
+import type { SessionUser } from '@/types/api'
 
 // GET /api/facility-types - ดึงรายการประเภทสถานบริการ
 export async function GET() {
@@ -29,7 +30,7 @@ export async function POST(request: NextRequest) {
   try {
     const session = await auth()
     
-    if (!session?.user || (session.user as any).role !== 'ADMIN') {
+    if (!session?.user || (session.user as SessionUser).role !== 'ADMIN') {
       return NextResponse.json(
         { success: false, error: 'ไม่มีสิทธิ์เข้าถึง' },
         { status: 403 }

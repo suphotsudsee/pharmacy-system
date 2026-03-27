@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import type { DrugInventoryWhereInput, StockStatus } from '@/types/api'
+import type { Drug } from '@/generated/prisma/models'
 
 // GET /api/inventory - ดึงข้อมูลคลังยา
 export async function GET(request: NextRequest) {
@@ -14,7 +16,8 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '100')
     const skip = (page - 1) * limit
 
-    const where: any = {}
+    // ใช้ Prisma type แทน any
+    const where: DrugInventoryWhereInput = {}
     
     if (hospitalId) where.hospitalId = parseInt(hospitalId)
     if (drugId) where.drugId = parseInt(drugId)
@@ -46,8 +49,8 @@ export async function GET(request: NextRequest) {
 
     // เพิ่มข้อมูลสถานะและกรอง
     let inventoryWithStatus = inventory.map(item => {
-      const drug = item.drug as any
-      const status = getStockStatus(item, drug)
+      const drug = item.drug as Drug
+      const status: StockStatus = getStockStatus(item, drug)
       const daysUntilExpiry = item.expiryDate 
         ? Math.ceil((new Date(item.expiryDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
         : null
@@ -171,7 +174,7 @@ export async function POST(request: NextRequest) {
 }
 
 // Helper function - คำนวณสถานะสต็อก
-function getStockStatus(item: any, drug: any) {
+function getStockStatus(item: { currentStock: number }, drug: { minStock: number; reorderPoint: number }): StockStatus {
   if (item.currentStock === 0) return 'OUT_OF_STOCK'
   if (item.currentStock <= drug.minStock) return 'LOW_STOCK'
   if (item.currentStock <= drug.reorderPoint) return 'REORDER'

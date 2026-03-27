@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import type { DrugWhereInput } from '@/types/api'
 
 // GET /api/drugs - ดึงรายการยาทั้งหมด
 export async function GET(request: NextRequest) {
@@ -11,7 +12,8 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '100')
     const skip = (page - 1) * limit
 
-    const where: any = { isActive: true }
+    // ใช้ Prisma type แทน any
+    const where: DrugWhereInput = { isActive: true }
     
     if (categoryId) where.categoryId = parseInt(categoryId)
     if (search) {

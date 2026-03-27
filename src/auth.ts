@@ -35,11 +35,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           return null
         }
 
-        // Check password
-        let isValid = credentials.password === user.password
-        if (!isValid && user.password && user.password.startsWith("$2")) {
-          isValid = await bcrypt.compare(credentials.password as string, user.password)
+        // ตรวจสอบว่า password ใน DB เป็น bcrypt hash (ขึ้นต้นด้วย $2)
+        if (!user.password || !user.password.startsWith("$2")) {
+          console.error("รหัสผ่านในฐานข้อมูลไม่ใช่ bcrypt hash")
+          return null
         }
+
+        // ใช้ bcrypt hash comparison เท่านั้น (ปลอดภัยกว่า plain text)
+        const isValid = await bcrypt.compare(credentials.password as string, user.password)
 
         if (!isValid) {
           return null

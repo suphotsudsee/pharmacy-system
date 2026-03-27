@@ -2,13 +2,14 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/auth'
 import { prisma } from '@/lib/prisma'
 import bcrypt from 'bcryptjs'
+import type { SessionUser } from '@/types/api'
 
 // GET /api/users - ดึงรายการผู้ใช้
 export async function GET() {
   try {
     const session = await auth()
     
-    if (!session?.user || (session.user as any).role !== 'ADMIN') {
+    if (!session?.user || (session.user as SessionUser).role !== 'ADMIN') {
       return NextResponse.json(
         { success: false, error: 'ไม่มีสิทธิ์เข้าถึง' },
         { status: 403 }

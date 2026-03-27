@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import type { DrugRequestWhereInput, CreateDrugRequest } from '@/types/api'
 
 // GET /api/requests - ดึงรายการใบเบิกยา
 export async function GET(request: NextRequest) {
@@ -13,10 +14,11 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '50')
     const skip = (page - 1) * limit
 
-    const where: any = {}
+    // ใช้ Prisma type แทน any
+    const where: DrugRequestWhereInput = {}
     
     if (hospitalId) where.hospitalId = parseInt(hospitalId)
-    if (status) where.status = status
+    if (status) where.status = status as DrugRequestWhereInput['status']
     if (startDate || endDate) {
       where.requestDate = {}
       if (startDate) where.requestDate.gte = new Date(startDate)

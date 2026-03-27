@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import type { HospitalWhereInput } from '@/types/api'
 
 // GET /api/hospitals - ดึงรายการโรงพยาบาลทั้งหมด
 export async function GET(request: NextRequest) {
@@ -12,7 +13,8 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '50')
     const skip = (page - 1) * limit
 
-    const where: any = { isActive: true }
+    // ใช้ Prisma type แทน any
+    const where: HospitalWhereInput = { isActive: true }
     
     if (provinceId) where.provinceId = parseInt(provinceId)
     if (facilityTypeId) where.facilityTypeId = parseInt(facilityTypeId)
