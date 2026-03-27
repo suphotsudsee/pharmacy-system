@@ -66,6 +66,11 @@ export function Navbar() {
               <Link href="/import" className="hover:bg-blue-600 dark:hover:bg-gray-700 px-3 py-2 rounded">
                 📥 นำเข้า
               </Link>
+              {status === "authenticated" && (session?.user as any)?.role === "ADMIN" && (
+                <Link href="/settings" className="hover:bg-blue-600 dark:hover:bg-gray-700 px-3 py-2 rounded">
+                  ⚙️ ตั้งค่า
+                </Link>
+              )}
             </div>
           </div>
           
@@ -108,6 +113,9 @@ export function Navbar() {
         <Link href="/inventory" className="block py-1 hover:bg-blue-600 dark:hover:bg-gray-700 px-2 rounded">📦 คลังยา</Link>
         <Link href="/requests" className="block py-1 hover:bg-blue-600 dark:hover:bg-gray-700 px-2 rounded">📝 ใบเบิกยา</Link>
         <Link href="/import" className="block py-1 hover:bg-blue-600 dark:hover:bg-gray-700 px-2 rounded">📥 นำเข้า</Link>
+        {status === "authenticated" && (session?.user as any)?.role === "ADMIN" && (
+          <Link href="/settings" className="block py-1 hover:bg-blue-600 dark:hover:bg-gray-700 px-2 rounded">⚙️ ตั้งค่า</Link>
+        )}
       </div>
     </nav>
   );
