@@ -5,7 +5,7 @@ export default function HomePage() {
       <div className="bg-gradient-to-r from-blue-600 to-blue-800 rounded-xl shadow-xl p-8 mb-8 text-white">
         <h1 className="text-4xl font-bold mb-4">🏥 ระบบคลังยา</h1>
         <p className="text-xl opacity-90 mb-6">
-          ระบบจัดการคลังยาสำหรับโรงพยาบาลทั่วประเทศไทย
+          ระบบจัดการคลังยาสำหรับโรงพยาบาลทุกแห่ง
         </p>
         <div className="flex flex-wrap gap-4">
           <a href="/dashboard" className="bg-white text-blue-700 px-6 py-3 rounded-lg font-medium hover:bg-gray-100">
