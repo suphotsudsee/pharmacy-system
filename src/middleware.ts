@@ -1,20 +1,6 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
-// Paths that require authentication
-const protectedPaths = [
-  // Create pages
-  "/hospitals/new",
-  "/drugs/new",
-  "/inventory/new",
-  "/requests/new",
-  // Edit/Delete pages (detail pages with [id])
-  "/hospitals/",
-  "/drugs/",
-  "/inventory/",
-  "/requests/",
-]
-
 // Paths that are completely public (no auth needed)
 const publicPaths = [
   "/login",
@@ -25,6 +11,20 @@ const publicPaths = [
   "/api/inventory/fix",
 ]
 
+// List pages that are view-only (no auth needed)
+const listPages = ["/dashboard", "/hospitals", "/drugs", "/inventory", "/requests", "/import", "/"]
+
+// CRUD paths that require authentication
+const crudPaths = [
+  "/hospitals/new",
+  "/drugs/new",
+  "/inventory/new",
+  "/requests/new",
+  "/settings/users/new",
+  "/settings/users/",
+  "/settings/",
+]
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
@@ -33,30 +33,32 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  // Allow static files and API
-  if (
-    pathname.startsWith("/_next") || 
-    pathname.includes(".") ||
-    pathname.startsWith("/api/")
-  ) {
+  // Allow static files
+  if (pathname.startsWith("/_next") || pathname.includes(".")) {
     return NextResponse.next()
   }
 
-  // Check if path requires authentication
-  // List pages (viewing) - no auth needed
-  const listPages = ["/dashboard", "/hospitals", "/drugs", "/inventory", "/requests", "/import", "/"]
-  
-  // Check if it's a list page (exact match or ends with query params)
+  // Allow API routes (auth is checked in the API route itself)
+  if (pathname.startsWith("/api/")) {
+    return NextResponse.next()
+  }
+
+  // Allow list pages (view-only, no auth needed)
   const isListPage = listPages.some(page => pathname === page || pathname === page + "/")
-  
   if (isListPage) {
     return NextResponse.next()
   }
 
-  // All other pages (detail/edit/delete/new) require auth
-  const needsAuth = protectedPaths.some(path => pathname.startsWith(path))
+  // Check if path requires authentication (CRUD operations)
+  // /new, /[id], /settings
+  const isNewPage = pathname.includes("/new")
+  const hasIdInPath = pathname.match(/\/(hospitals|drugs|inventory|requests|users)\/\d+/)
+  const isCrudPath = crudPaths.some(path => pathname.startsWith(path))
   
-  if (needsAuth || !isListPage) {
+  const needsAuth = isNewPage || hasIdInPath || isCrudPath
+
+  if (needsAuth) {
+    // Check for session token in cookies
     const sessionToken = request.cookies.get("next-auth.session-token")?.value || 
                          request.cookies.get("__Secure-next-auth.session-token")?.value
 

@@ -106,7 +106,7 @@ export async function PUT(
     }
 
     // Hash password if provided
-    if (body.password) {
+    if (body.password && body.password.length >= 6) {
       updateData.password = await bcrypt.hash(body.password, 10)
     }
 

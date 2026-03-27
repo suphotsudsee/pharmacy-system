@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import Link from 'next/link';
 
 interface DrugRequest {
   id: number;
@@ -9,21 +11,10 @@ interface DrugRequest {
   requestDate: string;
   requiredDate: string | null;
   status: string;
-  requestedBy: string | null;
+  requestedBy: string;
+  approvedBy: string | null;
   notes: string | null;
-  items: Array<{
-    id: number;
-    drug: { id: number; drugCode: string; name: string; unit: string };
-    quantity: number;
-    approvedQuantity: number | null;
-    notes: string | null;
-  }>;
-}
-
-interface Hospital {
-  id: number;
-  name: string;
-  hospCode: string;
+  _count?: { items: number };
 }
 
 interface Pagination {
@@ -33,18 +24,29 @@ interface Pagination {
   totalPages: number;
 }
 
-const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
-  'PENDING': { label: 'รออนุมัติ', color: 'bg-yellow-100 text-yellow-800' },
-  'APPROVED': { label: 'อนุมัติแล้ว', color: 'bg-green-100 text-green-800' },
-  'PROCESSING': { label: 'กำลังเตรียม', color: 'bg-blue-100 text-blue-800' },
-  'COMPLETED': { label: 'เสร็จสิ้น', color: 'bg-gray-100 text-gray-800' },
-  'CANCELLED': { label: 'ยกเลิก', color: 'bg-red-100 text-red-800' },
-  'REJECTED': { label: 'ปฏิเสธ', color: 'bg-red-100 text-red-800' }
+const statusLabels: Record<string, string> = {
+  PENDING: 'รออนุมัติ',
+  APPROVED: 'อนุมัติแล้ว',
+  PROCESSING: 'กำลังดำเนินการ',
+  COMPLETED: 'เสร็จสิ้น',
+  REJECTED: 'ปฏิเสธ',
+  CANCELLED: 'ยกเลิก',
+};
+
+const statusColors: Record<string, string> = {
+  PENDING: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
+  APPROVED: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
+  PROCESSING: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400',
+  COMPLETED: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
+  REJECTED: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
+  CANCELLED: 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400',
 };
 
 export default function RequestsPage() {
+  const { data: session, status } = useSession();
+  const isAuthenticated = status === 'authenticated';
+  
   const [requests, setRequests] = useState<DrugRequest[]>([]);
-  const [hospitals, setHospitals] = useState<Hospital[]>([]);
   const [pagination, setPagination] = useState<Pagination>({
     page: 1,
     limit: 50,
@@ -52,22 +54,23 @@ export default function RequestsPage() {
     totalPages: 0
   });
   const [loading, setLoading] = useState(true);
-  const [selectedHospital, setSelectedHospital] = useState<string>('');
-  const [selectedStatus, setSelectedStatus] = useState<string>('');
+  const [search, setSearch] = useState('');
+  const [hospitalFilter, setHospitalFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+  const [hospitals, setHospitals] = useState<{ id: number; name: string }[]>([]);
 
   useEffect(() => {
     fetchHospitals();
-  }, []);
-
-  useEffect(() => {
     fetchRequests();
-  }, [pagination.page, selectedHospital, selectedStatus]);
+  }, [pagination.page]);
 
   const fetchHospitals = async () => {
     try {
       const res = await fetch('/api/hospitals?limit=1000');
       const data = await res.json();
-      if (data.success) setHospitals(data.data);
+      if (data.success) {
+        setHospitals(data.data);
+      }
     } catch (error) {
       console.error('Error fetching hospitals:', error);
     }
@@ -80,8 +83,9 @@ export default function RequestsPage() {
         page: pagination.page.toString(),
         limit: pagination.limit.toString(),
       });
-      if (selectedHospital) params.set('hospitalId', selectedHospital);
-      if (selectedStatus) params.set('status', selectedStatus);
+      if (search) params.set('search', search);
+      if (hospitalFilter) params.set('hospitalId', hospitalFilter);
+      if (statusFilter) params.set('status', statusFilter);
 
       const res = await fetch(`/api/requests?${params}`);
       const data = await res.json();
@@ -96,214 +100,163 @@ export default function RequestsPage() {
     }
   };
 
-  const getStatusBadge = (status: string) => {
-    const config = STATUS_CONFIG[status] || STATUS_CONFIG['PENDING'];
-    return (
-      <span className={`px-2 py-1 rounded text-sm ${config.color}`}>
-        {config.label}
-      </span>
-    );
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    setPagination(prev => ({ ...prev, page: 1 }));
+    fetchRequests();
   };
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">📝 ใบเบิกยา</h1>
-        <a
-          href="/requests/new"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
-          + สร้างใบเบิกยา
-        </a>
+        {isAuthenticated && (
+          <Link
+            href="/requests/new"
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500"
+          >
+            + สร้างใบเบิกยา
+          </Link>
+        )}
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-xl shadow p-4 mb-6">
+      <form onSubmit={handleSearch} className="mb-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div>
-            <label className="block text-sm font-medium mb-1">โรงพยาบาล</label>
-            <select
-              value={selectedHospital}
-              onChange={(e) => {
-                setSelectedHospital(e.target.value);
-                setPagination(prev => ({ ...prev, page: 1 }));
-              }}
-              className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">ทุกโรงพยาบาล</option>
-              {hospitals.map((h) => (
-                <option key={h.id} value={h.id}>{h.name}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">สถานะ</label>
-            <select
-              value={selectedStatus}
-              onChange={(e) => {
-                setSelectedStatus(e.target.value);
-                setPagination(prev => ({ ...prev, page: 1 }));
-              }}
-              className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">ทุกสถานะ</option>
-              {Object.entries(STATUS_CONFIG).map(([key, value]) => (
-                <option key={key} value={key}>{value.label}</option>
-              ))}
-            </select>
-          </div>
-          <div className="flex items-end">
-            <button
-              onClick={() => {
-                setSelectedHospital('');
-                setSelectedStatus('');
-                setPagination(prev => ({ ...prev, page: 1 }));
-              }}
-              className="text-blue-600 hover:underline text-sm"
-            >
-              รีเซ็ตตัวกรอง
-            </button>
-          </div>
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="ค้นหาเลขที่ใบเบิก..."
+            className="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+          />
+          <select
+            value={hospitalFilter}
+            onChange={(e) => setHospitalFilter(e.target.value)}
+            className="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+          >
+            <option value="">ทุกโรงพยาบาล</option>
+            {hospitals.map((h) => (
+              <option key={h.id} value={h.id}>{h.name}</option>
+            ))}
+          </select>
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+          >
+            <option value="">ทุกสถานะ</option>
+            <option value="PENDING">รออนุมัติ</option>
+            <option value="APPROVED">อนุมัติแล้ว</option>
+            <option value="PROCESSING">กำลังดำเนินการ</option>
+            <option value="COMPLETED">เสร็จสิ้น</option>
+            <option value="REJECTED">ปฏิเสธ</option>
+            <option value="CANCELLED">ยกเลิก</option>
+          </select>
+          <button
+            type="submit"
+            className="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 dark:bg-gray-600 dark:hover:bg-gray-500"
+          >
+            ค้นหา
+          </button>
         </div>
-      </div>
+      </form>
 
       {/* Stats */}
-      <div className="bg-yellow-50 rounded-lg p-4 mb-6">
-        <div className="text-sm text-yellow-800">
-          จำนวนใบเบิกยา: <span className="font-bold">{pagination.total}</span> รายการ
+      <div className="bg-blue-50 dark:bg-blue-900/30 rounded-lg p-4 mb-6">
+        <div className="text-sm text-blue-800 dark:text-blue-300">
+          จำนวนใบเบิกยาทั้งหมด: <span className="font-bold">{pagination.total}</span> ใบ
         </div>
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-xl shadow overflow-hidden">
-        <div className="overflow-x-auto">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow overflow-hidden">
+        {loading ? (
+          <div className="p-8 text-center text-gray-500 dark:text-gray-400">กำลังโหลด...</div>
+        ) : requests.length === 0 ? (
+          <div className="p-8 text-center text-gray-500 dark:text-gray-400">ไม่พบข้อมูล</div>
+        ) : (
           <table className="w-full">
-            <thead className="bg-gray-50">
+            <thead className="bg-gray-50 dark:bg-gray-700">
               <tr>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">เลขที่</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">โรงพยาบาล</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">วันที่เบิก</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">รายการ</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">สถานะ</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">การกระทำ</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">เลขที่ใบเบิก</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">โรงพยาบาล</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">วันที่เบิก</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">รายการ</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">สถานะ</th>
+                {isAuthenticated && (
+                  <th className="px-4 py-3 text-right text-sm font-medium text-gray-700 dark:text-gray-300">การจัดการ</th>
+                )}
               </tr>
             </thead>
-            <tbody className="divide-y">
-              {loading ? (
-                <tr>
-                  <td colSpan={6} className="px-4 py-8 text-center text-gray-500">
-                    กำลังโหลดข้อมูล...
+            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+              {requests.map((req) => (
+                <tr key={req.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                  <td className="px-4 py-3">
+                    <div className="font-medium text-gray-900 dark:text-white">{req.requestNumber}</div>
                   </td>
-                </tr>
-              ) : requests.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="px-4 py-8 text-center text-gray-500">
-                    ไม่พบใบเบิกยา
+                  <td className="px-4 py-3 text-gray-600 dark:text-gray-300">{req.hospital.name}</td>
+                  <td className="px-4 py-3 text-gray-600 dark:text-gray-300">
+                    {new Date(req.requestDate).toLocaleDateString('th-TH')}
                   </td>
-                </tr>
-              ) : (
-                requests.map((req) => (
-                  <tr key={req.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-3">
-                      <a
+                  <td className="px-4 py-3 text-gray-600 dark:text-gray-300">{req._count?.items || 0} รายการ</td>
+                  <td className="px-4 py-3">
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusColors[req.status] || 'bg-gray-100 text-gray-800'}`}>
+                      {statusLabels[req.status] || req.status}
+                    </span>
+                  </td>
+                  {isAuthenticated && (
+                    <td className="px-4 py-3 text-right">
+                      <Link
                         href={`/requests/${req.id}`}
-                        className="text-blue-600 hover:underline font-mono"
+                        className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 mr-3"
                       >
-                        {req.requestNumber}
-                      </a>
-                    </td>
-                    <td className="px-4 py-3">{req.hospital.name}</td>
-                    <td className="px-4 py-3">
-                      {new Date(req.requestDate).toLocaleDateString('th-TH')}
-                      {req.requiredDate && (
-                        <div className="text-xs text-gray-500">
-                          ต้องการ: {new Date(req.requiredDate).toLocaleDateString('th-TH')}
-                        </div>
+                        ดู
+                      </Link>
+                      {req.status === 'PENDING' && (
+                        <Link
+                          href={`/requests/${req.id}`}
+                          className="text-yellow-600 hover:text-yellow-800 dark:text-yellow-400 dark:hover:text-yellow-300 mr-3"
+                        >
+                          อนุมัติ
+                        </Link>
                       )}
                     </td>
-                    <td className="px-4 py-3">
-                      <span className="font-medium">{req.items.length}</span>
-                      <span className="text-gray-500 ml-1">รายการ</span>
-                    </td>
-                    <td className="px-4 py-3">{getStatusBadge(req.status)}</td>
-                    <td className="px-4 py-3">
-                      <div className="flex gap-2">
-                        <a
-                          href={`/requests/${req.id}`}
-                          className="text-blue-600 hover:underline text-sm"
-                        >
-                          ดู
-                        </a>
-                        {req.status === 'PENDING' && (
-                          <>
-                            <a
-                              href={`/requests/${req.id}`}
-                              className="text-yellow-600 hover:underline text-sm"
-                            >
-                              แก้ไข
-                            </a>
-                            <button
-                              onClick={async () => {
-                                if (!confirm('ยืนยันลบใบเบิกยานี้?')) return;
-                                const res = await fetch(`/api/requests/${req.id}`, { method: 'DELETE' });
-                                const data = await res.json();
-                                if (data.success) {
-                                  fetchRequests();
-                                } else {
-                                  alert(data.error || 'เกิดข้อผิดพลาด');
-                                }
-                              }}
-                              className="text-red-600 hover:underline text-sm"
-                            >
-                              ลบ
-                            </button>
-                          </>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              )}
+                  )}
+                </tr>
+              ))}
             </tbody>
           </table>
-        </div>
-
-        {/* Pagination */}
-        {pagination.totalPages > 1 && (
-          <div className="flex justify-between items-center px-4 py-3 bg-gray-50 border-t">
-            <div className="text-sm text-gray-500">
-              หน้า {pagination.page} จาก {pagination.totalPages}
-            </div>
-            <div className="flex gap-2">
-              <button
-                onClick={() => setPagination(prev => ({ ...prev, page: prev.page - 1 }))}
-                disabled={pagination.page === 1}
-                className="px-3 py-1 border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
-              >
-                ก่อนหน้า
-              </button>
-              <button
-                onClick={() => setPagination(prev => ({ ...prev, page: prev.page + 1 }))}
-                disabled={pagination.page === pagination.totalPages}
-                className="px-3 py-1 border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
-              >
-                ถัดไป
-              </button>
-            </div>
-          </div>
         )}
       </div>
 
-      {/* Status Legend */}
-      <div className="mt-6 bg-white rounded-xl shadow p-4">
-        <h3 className="font-bold mb-2">📖 คำอธิบายสถานะ</h3>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-sm">
-          {Object.entries(STATUS_CONFIG).map(([key, value]) => (
-            <div key={key} className="flex items-center gap-2">
-              <span className={`px-2 py-1 rounded ${value.color}`}>{value.label}</span>
-            </div>
-          ))}
+      {/* Pagination */}
+      {pagination.totalPages > 1 && (
+        <div className="flex justify-center gap-2 mt-6">
+          <button
+            onClick={() => setPagination(prev => ({ ...prev, page: prev.page - 1 }))}
+            disabled={pagination.page === 1}
+            className="px-4 py-2 border rounded-lg disabled:opacity-50 dark:border-gray-600 dark:text-gray-300"
+          >
+            ก่อนหน้า
+          </button>
+          <span className="px-4 py-2 dark:text-gray-300">
+            หน้า {pagination.page} / {pagination.totalPages}
+          </span>
+          <button
+            onClick={() => setPagination(prev => ({ ...prev, page: prev.page + 1 }))}
+            disabled={pagination.page === pagination.totalPages}
+            className="px-4 py-2 border rounded-lg disabled:opacity-50 dark:border-gray-600 dark:text-gray-300"
+          >
+            ถัดไป
+          </button>
         </div>
+      )}
+
+      <div className="mt-6">
+        <Link href="/" className="text-blue-600 hover:underline dark:text-blue-400">
+          ← กลับหน้าหลัก
+        </Link>
       </div>
     </div>
   );

@@ -6,9 +6,13 @@ import bcrypt from "bcryptjs"
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(prisma),
-  session: { strategy: "jwt" },
+  session: { 
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
   pages: {
     signIn: "/login",
+    error: "/login",
   },
   trustHost: true,
   providers: [
@@ -27,13 +31,19 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           where: { username: credentials.username as string }
         })
 
-        if (!user || !user.isActive) {
+        if (!user) {
           return null
         }
 
-        // For now, simple password check (in production, use bcrypt)
-        const isValid = credentials.password === user.password || 
-                        await bcrypt.compare(credentials.password as string, user.password)
+        if (!user.isActive) {
+          return null
+        }
+
+        // Check password
+        let isValid = credentials.password === user.password
+        if (!isValid && user.password.startsWith("$2")) {
+          isValid = await bcrypt.compare(credentials.password as string, user.password)
+        }
 
         if (!isValid) {
           return null
@@ -51,8 +61,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.role = user.role
         token.id = user.id
+        token.role = (user as any).role
+        token.name = user.name
+        token.email = user.email
       }
       return token
     },
@@ -60,6 +72,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (session.user) {
         session.user.id = token.id as string
         session.user.role = token.role as string
+        session.user.name = token.name as string
+        session.user.email = token.email as string
       }
       return session
     }

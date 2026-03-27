@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/auth'
 import { prisma } from '@/lib/prisma'
+import bcrypt from 'bcryptjs'
 
 // GET /api/users - ดึงรายการผู้ใช้
 export async function GET() {
@@ -53,6 +54,21 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json()
     
+    // Validation
+    if (!body.username || !body.password || !body.fullName) {
+      return NextResponse.json(
+        { success: false, error: 'กรุณากรอกข้อมูลให้ครบถ้วน' },
+        { status: 400 }
+      )
+    }
+
+    if (body.password.length < 6) {
+      return NextResponse.json(
+        { success: false, error: 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร' },
+        { status: 400 }
+      )
+    }
+    
     // Check if username exists
     const existing = await prisma.user.findUnique({
       where: { username: body.username }
@@ -65,15 +81,18 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create user (password will be stored as-is for now, in production use bcrypt)
+    // Hash password
+    const hashedPassword = await bcrypt.hash(body.password, 10)
+
+    // Create user
     const user = await prisma.user.create({
       data: {
         username: body.username,
-        password: body.password, // In production, hash with bcrypt
+        password: hashedPassword,
         fullName: body.fullName,
-        email: body.email,
-        role: body.role,
-        hospitalId: body.hospitalId,
+        email: body.email || null,
+        role: body.role || 'STAFF',
+        hospitalId: body.hospitalId || null,
         isActive: true
       },
       select: {
@@ -91,7 +110,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Error creating user:', error)
     return NextResponse.json(
-      { success: false, error: 'เกิดข้อผิดพลาดในการสร้างผู้ใช้' },
+      { success: false, error: 'เกิดข้อผิดพลาดในการสร้างผู้ใช้: ' + (error instanceof Error ? error.message : 'Unknown error') },
       { status: 500 }
     )
   }

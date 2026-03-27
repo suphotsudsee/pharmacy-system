@@ -4,8 +4,10 @@ import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { ThemeToggle } from "./ThemeToggle";
+import { useRouter } from "next/navigation";
 
 export function Navbar() {
+  const router = useRouter();
   const { data: session, status } = useSession();
   const [mounted, setMounted] = useState(false);
 
@@ -18,6 +20,13 @@ export function Navbar() {
     PHARMACIST: "เภสัชกร",
     STAFF: "เจ้าหน้าที่",
     VIEWER: "ผู้ดู",
+  };
+
+  const handleSignOut = async () => {
+    // Clear session and redirect to login
+    await signOut({ redirect: false });
+    router.push("/login");
+    router.refresh();
   };
 
   // Don't render anything until mounted on client
@@ -37,6 +46,9 @@ export function Navbar() {
       </nav>
     );
   }
+
+  const isAuthenticated = status === "authenticated" && session?.user;
+  const userRole = (session?.user as any)?.role;
 
   return (
     <nav className="bg-blue-700 text-white shadow-lg dark:bg-gray-800">
@@ -66,7 +78,7 @@ export function Navbar() {
               <Link href="/import" className="hover:bg-blue-600 dark:hover:bg-gray-700 px-3 py-2 rounded">
                 📥 นำเข้า
               </Link>
-              {status === "authenticated" && (session?.user as any)?.role === "ADMIN" && (
+              {isAuthenticated && userRole === "ADMIN" && (
                 <Link href="/settings" className="hover:bg-blue-600 dark:hover:bg-gray-700 px-3 py-2 rounded">
                   ⚙️ ตั้งค่า
                 </Link>
@@ -78,17 +90,17 @@ export function Navbar() {
             {/* Theme Toggle Button */}
             <ThemeToggle />
             
-            {status === "authenticated" && session?.user ? (
+            {isAuthenticated ? (
               <>
                 <div className="text-right hidden sm:block">
                   <div className="text-sm font-medium">{session.user.name}</div>
                   <div className="text-xs opacity-75">
-                    {(session.user as any).role && roleLabels[(session.user as any).role]}
+                    {roleLabels[userRole] || userRole}
                   </div>
                 </div>
                 <button
-                  onClick={() => signOut({ callbackUrl: "/login" })}
-                  className="bg-blue-600 hover:bg-blue-500 dark:bg-gray-700 dark:hover:bg-gray-600 px-3 py-2 rounded text-sm"
+                  onClick={handleSignOut}
+                  className="bg-blue-600 hover:bg-blue-500 dark:bg-gray-700 dark:hover:bg-gray-600 px-3 py-2 rounded text-sm transition-colors"
                 >
                   ออกจากระบบ
                 </button>
@@ -96,7 +108,7 @@ export function Navbar() {
             ) : (
               <Link
                 href="/login"
-                className="bg-blue-600 hover:bg-blue-500 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded text-sm"
+                className="bg-blue-600 hover:bg-blue-500 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded text-sm transition-colors"
               >
                 🔐 เข้าสู่ระบบ
               </Link>
@@ -113,7 +125,7 @@ export function Navbar() {
         <Link href="/inventory" className="block py-1 hover:bg-blue-600 dark:hover:bg-gray-700 px-2 rounded">📦 คลังยา</Link>
         <Link href="/requests" className="block py-1 hover:bg-blue-600 dark:hover:bg-gray-700 px-2 rounded">📝 ใบเบิกยา</Link>
         <Link href="/import" className="block py-1 hover:bg-blue-600 dark:hover:bg-gray-700 px-2 rounded">📥 นำเข้า</Link>
-        {status === "authenticated" && (session?.user as any)?.role === "ADMIN" && (
+        {isAuthenticated && userRole === "ADMIN" && (
           <Link href="/settings" className="block py-1 hover:bg-blue-600 dark:hover:bg-gray-700 px-2 rounded">⚙️ ตั้งค่า</Link>
         )}
       </div>
