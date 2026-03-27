@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
-// Paths that are completely public (no auth needed)
+// Public paths - no auth needed
 const publicPaths = [
   "/login",
   "/api/auth",
@@ -11,51 +11,62 @@ const publicPaths = [
   "/api/inventory/fix",
 ]
 
-// List pages that are view-only (no auth needed)
-const listPages = ["/dashboard", "/hospitals", "/drugs", "/inventory", "/requests", "/import", "/"]
+// List pages - view only, no auth needed
+const listPages = [
+  "/dashboard",
+  "/hospitals",
+  "/drugs",
+  "/inventory",
+  "/requests",
+  "/import",
+  "/"
+]
 
-// CRUD paths that require authentication
+// CRUD paths - require authentication
 const crudPaths = [
   "/hospitals/new",
+  "/hospitals/",
   "/drugs/new",
+  "/drugs/",
   "/inventory/new",
+  "/inventory/",
   "/requests/new",
-  "/settings/users/new",
-  "/settings/users/",
-  "/settings/",
+  "/requests/",
+  "/settings",
 ]
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  // Allow public paths
+  // 1. Allow public paths
   if (publicPaths.some(path => pathname.startsWith(path))) {
     return NextResponse.next()
   }
 
-  // Allow static files
+  // 2. Allow static files
   if (pathname.startsWith("/_next") || pathname.includes(".")) {
     return NextResponse.next()
   }
 
-  // Allow API routes (auth is checked in the API route itself)
+  // 3. Allow API routes (auth checked in route handlers)
   if (pathname.startsWith("/api/")) {
     return NextResponse.next()
   }
 
-  // Allow list pages (view-only, no auth needed)
-  const isListPage = listPages.some(page => pathname === page || pathname === page + "/")
+  // 4. Allow list pages (view-only)
+  const isListPage = listPages.some(page => 
+    pathname === page || pathname === page + "/"
+  )
   if (isListPage) {
     return NextResponse.next()
   }
 
-  // Check if path requires authentication (CRUD operations)
-  // /new, /[id], /settings
+  // 5. Check CRUD paths - require authentication
+  const isCrudPath = crudPaths.some(path => pathname.startsWith(path))
   const isNewPage = pathname.includes("/new")
   const hasIdInPath = pathname.match(/\/(hospitals|drugs|inventory|requests|users)\/\d+/)
-  const isCrudPath = crudPaths.some(path => pathname.startsWith(path))
   
-  const needsAuth = isNewPage || hasIdInPath || isCrudPath
+  const needsAuth = isCrudPath || isNewPage || hasIdInPath
 
   if (needsAuth) {
     // Check for session token in cookies

@@ -23,13 +23,11 @@ export function Navbar() {
   };
 
   const handleSignOut = async () => {
-    // Clear session and redirect to login
     await signOut({ redirect: false });
     router.push("/login");
     router.refresh();
   };
 
-  // Don't render anything until mounted on client
   if (!mounted) {
     return (
       <nav className="bg-blue-700 text-white shadow-lg dark:bg-gray-800">
@@ -87,7 +85,6 @@ export function Navbar() {
           </div>
           
           <div className="flex items-center space-x-2">
-            {/* Theme Toggle Button */}
             <ThemeToggle />
             
             {isAuthenticated ? (

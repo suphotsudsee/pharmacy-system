@@ -31,17 +31,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           where: { username: credentials.username as string }
         })
 
-        if (!user) {
-          return null
-        }
-
-        if (!user.isActive) {
+        if (!user || !user.isActive) {
           return null
         }
 
         // Check password
         let isValid = credentials.password === user.password
-        if (!isValid && user.password.startsWith("$2")) {
+        if (!isValid && user.password && user.password.startsWith("$2")) {
           isValid = await bcrypt.compare(credentials.password as string, user.password)
         }
 
