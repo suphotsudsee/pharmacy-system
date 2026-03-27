@@ -20,19 +20,12 @@ function LoginForm() {
     setLoading(true)
 
     try {
-      const result = await signIn("credentials", {
+      await signIn("credentials", {
         username,
         password,
-        redirect: false,
+        redirect: true,
+        callbackUrl,
       })
-
-      if (result?.error) {
-        setError("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง")
-        setLoading(false)
-      } else {
-        // Success - redirect to callback URL
-        window.location.href = callbackUrl
-      }
     } catch (err) {
       setError("เกิดข้อผิดพลาดในการเข้าสู่ระบบ")
       setLoading(false)
@@ -79,7 +72,7 @@ function LoginForm() {
 
       {error && (
         <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700 text-red-700 dark:text-red-300 px-4 py-3 rounded-lg text-sm">
-          {error}
+          ❌ {error}
         </div>
       )}
 

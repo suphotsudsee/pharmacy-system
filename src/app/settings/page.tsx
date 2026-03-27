@@ -3,12 +3,19 @@
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default function SettingsPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
 
   // Redirect to login if not authenticated
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/login?callbackUrl=/settings');
+    }
+  }, [status, router]);
+
   if (status === 'loading') {
     return (
       <div className="max-w-7xl mx-auto px-4 py-8">
@@ -20,7 +27,6 @@ export default function SettingsPage() {
   }
 
   if (status === 'unauthenticated') {
-    router.push('/login?callbackUrl=/settings');
     return null;
   }
 

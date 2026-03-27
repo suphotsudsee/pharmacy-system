@@ -22,19 +22,6 @@ const listPages = [
   "/"
 ]
 
-// CRUD paths - require authentication
-const crudPaths = [
-  "/hospitals/new",
-  "/hospitals/",
-  "/drugs/new",
-  "/drugs/",
-  "/inventory/new",
-  "/inventory/",
-  "/requests/new",
-  "/requests/",
-  "/settings",
-]
-
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
@@ -53,7 +40,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  // 4. Allow list pages (view-only)
+  // 4. Allow list pages (view-only, no auth needed)
   const isListPage = listPages.some(page => 
     pathname === page || pathname === page + "/"
   )
@@ -61,17 +48,20 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  // 5. Check CRUD paths - require authentication
-  const isCrudPath = crudPaths.some(path => pathname.startsWith(path))
+  // 5. Check if path requires authentication
+  // /new pages, /[id] pages, /settings
   const isNewPage = pathname.includes("/new")
   const hasIdInPath = pathname.match(/\/(hospitals|drugs|inventory|requests|users)\/\d+/)
+  const isSettingsPage = pathname.startsWith("/settings")
   
-  const needsAuth = isCrudPath || isNewPage || hasIdInPath
+  const needsAuth = isNewPage || hasIdInPath || isSettingsPage
 
   if (needsAuth) {
-    // Check for session token in cookies
-    const sessionToken = request.cookies.get("next-auth.session-token")?.value || 
-                         request.cookies.get("__Secure-next-auth.session-token")?.value
+    // Check for session token in cookies (Edge Runtime compatible)
+    const sessionToken = request.cookies.get("authjs.session-token")?.value || 
+                         request.cookies.get("next-auth.session-token")?.value ||
+                         request.cookies.get("__Secure-next-auth.session-token")?.value ||
+                         request.cookies.get("__Secure-authjs.session-token")?.value
 
     if (!sessionToken) {
       const loginUrl = new URL("/login", request.url)
