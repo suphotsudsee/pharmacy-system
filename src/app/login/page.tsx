@@ -55,7 +55,7 @@ function LoginForm() {
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           required
-          className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
           placeholder="username"
         />
       </div>
@@ -69,7 +69,7 @@ function LoginForm() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
           placeholder="••••••••"
         />
       </div>
@@ -93,34 +93,34 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
+      <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md dark:bg-gray-800">
         <div className="text-center mb-8">
           <div className="text-5xl mb-4">💊</div>
-          <h1 className="text-2xl font-bold text-gray-800">ระบบคลังยา</h1>
-          <p className="text-gray-500 mt-2">เข้าสู่ระบบเพื่อจัดการข้อมูล</p>
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-white">ระบบคลังยา</h1>
+          <p className="text-gray-500 mt-2 dark:text-gray-400">เข้าสู่ระบบเพื่อจัดการข้อมูล</p>
         </div>
 
         <Suspense fallback={
           <div className="animate-pulse space-y-6">
-            <div className="h-12 bg-gray-200 rounded"></div>
-            <div className="h-12 bg-gray-200 rounded"></div>
-            <div className="h-12 bg-gray-300 rounded"></div>
+            <div className="h-12 bg-gray-200 rounded dark:bg-gray-700"></div>
+            <div className="h-12 bg-gray-200 rounded dark:bg-gray-700"></div>
+            <div className="h-12 bg-gray-300 rounded dark:bg-gray-600"></div>
           </div>
         }>
           <LoginForm />
         </Suspense>
 
-        <div className="mt-6 text-center text-sm text-gray-500">
+        <div className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
           <p className="mb-2">ผู้ใช้ทดสอบ:</p>
-          <div className="bg-gray-50 rounded-lg p-3 text-left">
+          <div className="bg-gray-50 rounded-lg p-3 text-left dark:bg-gray-700">
             <div className="flex justify-between mb-1">
-              <span className="text-gray-600">ผู้ดูแลระบบ:</span>
-              <code className="bg-gray-100 px-2 py-0.5 rounded text-xs">admin / admin123</code>
+              <span className="text-gray-600 dark:text-gray-300">ผู้ดูแลระบบ:</span>
+              <code className="bg-gray-100 dark:bg-gray-600 px-2 py-0.5 rounded text-xs">admin / admin123</code>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600">เภสัชกร:</span>
-              <code className="bg-gray-100 px-2 py-0.5 rounded text-xs">pharmacist / pharm123</code>
+              <span className="text-gray-600 dark:text-gray-300">เภสัชกร:</span>
+              <code className="bg-gray-100 dark:bg-gray-600 px-2 py-0.5 rounded text-xs">pharmacist / pharm123</code>
             </div>
           </div>
         </div>
