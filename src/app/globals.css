@@ -3,74 +3,80 @@
 /* ===================================
    🎨 Pharmacy Inventory System Theme
    iOS-Style Design System
-   Apple Design Language
+   Dark Mode Only
    =================================== */
 
-/* 🌞 Light Mode - iOS-inspired Clean Design */
+/* 🌙 Dark Theme - Dark Background */
 :root {
-  /* Background Colors */
-  --background: #f2f2f7;
-  --foreground: #1c1c1e;
-  --surface: #ffffff;
-  --surface-secondary: #f2f2f7;
-  --border: #c6c6c8;
-  --border-hover: #a1a1a6;
-  --separator: #c6c6c8;
+  /* Background Colors - Dark Theme */
+  --background: #000000;
+  --foreground: #ffffff;
+  --surface: #1c1c1e;
+  --surface-secondary: #2c2c2e;
+  --border: #38383a;
+  --border-hover: #48484a;
+  --separator: #38383a;
 
-  /* iOS System Colors */
-  --primary: #007AFF;
-  --primary-light: #4da3ff;
-  --primary-dark: #0056b3;
-  --primary-bg: rgba(0, 122, 255, 0.1);
+  /* iOS System Colors - Dark Mode */
+  --primary: #0a84ff;
+  --primary-light: #409cff;
+  --primary-dark: #004db3;
+  --primary-bg: rgba(10, 132, 255, 0.15);
   
   /* Secondary Colors */
-  --secondary: #34c759;
+  --secondary: #30d158;
   --secondary-light: #5dd377;
   --secondary-dark: #248a3d;
-  --secondary-bg: rgba(52, 199, 89, 0.1);
+  --secondary-bg: rgba(48, 209, 88, 0.15);
   
   /* Tertiary Colors */
-  --tertiary: #ff9500;
-  --tertiary-light: #ffad33;
+  --tertiary: #ff9f0a;
+  --tertiary-light: #ffb340;
   --tertiary-dark: #cc7700;
-  --tertiary-bg: rgba(255, 149, 0, 0.1);
-  
+  --tertiary-bg: rgba(255, 159, 10, 0.15);
+
+  /* Accent Colors */
+  --accent: #bf5af2;
+  --accent-light: #d085f5;
+  --accent-dark: #9a42c4;
+  --accent-bg: rgba(191, 90, 242, 0.15);
+
   /* Semantic Colors */
-  --success: #34c759;
-  --success-bg: rgba(52, 199, 89, 0.12);
-  --warning: #ff9500;
-  --warning-bg: rgba(255, 149, 0, 0.12);
-  --error: #ff3b30;
-  --error-bg: rgba(255, 59, 48, 0.12);
-  --info: #007AFF;
-  --info-bg: rgba(0, 122, 255, 0.12);
+  --success: #32d74b;
+  --success-bg: rgba(50, 215, 75, 0.15);
+  --warning: #ff9f0a;
+  --warning-bg: rgba(255, 159, 10, 0.15);
+  --error: #ff453a;
+  --error-bg: rgba(255, 69, 58, 0.15);
+  --info: #0a84ff;
+  --info-bg: rgba(10, 132, 255, 0.15);
 
   /* iOS Additional Colors */
-  --red: #ff3b30;
-  --orange: #ff9500;
-  --yellow: #ffcc00;
-  --green: #34c759;
-  --teal: #5ac8fa;
-  --blue: #007AFF;
-  --indigo: #5856d6;
-  --purple: #af52de;
-  --pink: #ff2d55;
+  --red: #ff453a;
+  --orange: #ff9f0a;
+  --yellow: #ffd60a;
+  --green: #32d74b;
+  --teal: #64d2ff;
+  --blue: #0a84ff;
+  --indigo: #5e5ce6;
+  --purple: #bf5af2;
+  --pink: #ff375f;
 
-  /* Text Colors */
-  --text-primary: #1c1c1e;
-  --text-secondary: #6e6e73;
-  --text-tertiary: #8e8e93;
-  --text-quaternary: #aeaeb2;
-  --text-inverse: #ffffff;
+  /* Text Colors - Light for Dark Background */
+  --text-primary: #ffffff;
+  --text-secondary: #e5e5e5;
+  --text-tertiary: #a1a1a6;
+  --text-quaternary: #636366;
+  --text-inverse: #000000;
 
-  /* iOS Shadows - Subtle & Layered */
-  --shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.04);
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
-  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.16);
-  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(0, 0, 0, 0.06);
-  --shadow-elevated: 0 4px 12px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(0, 0, 0, 0.06);
+  /* Shadows - Dark Mode */
+  --shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.6);
+  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.7);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-elevated: 0 4px 12px rgba(0, 0, 0, 0.5), 0 8px 24px rgba(0, 0, 0, 0.4);
 
   /* iOS Radius */
   --radius-xs: 6px;
@@ -87,73 +93,6 @@
   --transition-slow: 350ms;
   --ease-ios: cubic-bezier(0.25, 0.1, 0.25, 1);
 
-  color-scheme: light;
-}
-
-/* 🌙 Dark Mode - iOS Dark Mode */
-.dark {
-  /* Background Colors */
-  --background: #000000;
-  --foreground: #ffffff;
-  --surface: #1c1c1e;
-  --surface-secondary: #2c2c2e;
-  --border: #38383a;
-  --border-hover: #48484a;
-  --separator: #38383a;
-
-  /* iOS System Colors - Dark Mode Adjusted */
-  --primary: #0a84ff;
-  --primary-light: #409cff;
-  --primary-dark: #004db3;
-  --primary-bg: rgba(10, 132, 255, 0.15);
-  
-  --secondary: #30d158;
-  --secondary-light: #5dd377;
-  --secondary-dark: #248a3d;
-  --secondary-bg: rgba(48, 209, 88, 0.15);
-  
-  --tertiary: #ff9f0a;
-  --tertiary-light: #ffb340;
-  --tertiary-dark: #cc7700;
-  --tertiary-bg: rgba(255, 159, 10, 0.15);
-
-  /* Semantic Colors - Dark Mode */
-  --success: #32d74b;
-  --success-bg: rgba(50, 215, 75, 0.15);
-  --warning: #ff9f0a;
-  --warning-bg: rgba(255, 159, 10, 0.15);
-  --error: #ff453a;
-  --error-bg: rgba(255, 69, 58, 0.15);
-  --info: #0a84ff;
-  --info-bg: rgba(10, 132, 255, 0.15);
-
-  /* iOS Additional Colors - Dark Mode */
-  --red: #ff453a;
-  --orange: #ff9f0a;
-  --yellow: #ffd60a;
-  --green: #32d74b;
-  --teal: #64d2ff;
-  --blue: #0a84ff;
-  --indigo: #5e5ce6;
-  --purple: #bf5af2;
-  --pink: #ff375f;
-
-  /* Text Colors - Dark Mode */
-  --text-primary: #ffffff;
-  --text-secondary: #ababab;
-  --text-tertiary: #8e8e93;
-  --text-quaternary: #636366;
-  --text-inverse: #000000;
-
-  /* Shadows - Dark Mode */
-  --shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.3);
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
-  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.6);
-  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.7);
-  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.4);
-  --shadow-elevated: 0 4px 12px rgba(0, 0, 0, 0.5), 0 8px 24px rgba(0, 0, 0, 0.4);
-
   color-scheme: dark;
 }
 
@@ -164,6 +103,17 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-secondary: var(--surface-secondary);
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-tertiary: var(--tertiary);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-tertiary: var(--text-tertiary);
+  --color-text-quaternary: var(--text-quaternary);
+  --color-border: var(--border);
+  --color-separator: var(--separator);
 }
 
 body {
@@ -823,6 +773,20 @@ h6, .h6 { font-size: 0.875rem; font-weight: 600; line-height: 1.45; }
 
 .dark .navbar-link.active {
   background-color: rgba(10, 132, 255, 0.2);
+  color: var(--primary);
+}
+
+/* Better visibility for navbar text */
+.navbar-link, .navbar-link span {
+  color: var(--text-secondary);
+}
+
+.dark .navbar-link, .dark .navbar-link span {
+  color: #e4e4e7 !important;
+}
+
+.dark .navbar-link.active, .dark .navbar-link.active span {
+  color: #60a5fa !important;
 }
 
 /* iOS Tab Bar */
@@ -1154,7 +1118,7 @@ h6, .h6 { font-size: 0.875rem; font-weight: 600; line-height: 1.45; }
 }
 
 /* ===================================
-   🔧 Utility Overrides for Dark Mode
+   🔧 Utility Overrides for Better Visibility
    =================================== */
 
 /* Background overrides */
@@ -1162,12 +1126,29 @@ h6, .h6 { font-size: 0.875rem; font-weight: 600; line-height: 1.45; }
 .dark .bg-gray-50 { background-color: var(--surface-secondary) !important; }
 .dark .bg-gray-100 { background-color: var(--surface-secondary) !important; }
 
-/* Text color overrides */
-.dark .text-gray-500 { color: var(--text-tertiary) !important; }
-.dark .text-gray-600 { color: var(--text-secondary) !important; }
-.dark .text-gray-700 { color: var(--text-primary) !important; }
-.dark .text-gray-800 { color: var(--text-primary) !important; }
-.dark .text-gray-900 { color: var(--foreground) !important; }
+/* Text color overrides - Make ALL text more visible */
+/* Light Mode - Darker grays */
+.text-gray-300 { color: #4a4a4f !important; }
+.text-gray-400 { color: #5a5a5f !important; }
+.text-gray-500 { color: #6a6a6f !important; }
+.text-gray-600 { color: #3a3a3c !important; }
+.text-gray-700 { color: #2a2a2c !important; }
+.text-gray-800 { color: #1a1a1c !important; }
+.text-gray-900 { color: #000000 !important; }
+
+/* Dark Mode - Lighter grays for better contrast */
+.dark .text-gray-300 { color: #d4d4d8 !important; }
+.dark .text-gray-400 { color: #e4e4e7 !important; }
+.dark .text-gray-500 { color: #a1a1aa !important; }
+.dark .text-gray-600 { color: #d4d4d8 !important; }
+.dark .text-gray-700 { color: #e4e4e7 !important; }
+.dark .text-gray-800 { color: #f4f4f5 !important; }
+.dark .text-gray-900 { color: #ffffff !important; }
+
+/* Also override text-secondary, text-tertiary, etc. */
+.dark .text-secondary { color: var(--text-secondary) !important; }
+.dark .text-tertiary { color: var(--text-tertiary) !important; }
+.dark .text-quaternary { color: var(--text-quaternary) !important; }
 
 /* Border overrides */
 .dark .border-gray-200 { border-color: var(--separator) !important; }

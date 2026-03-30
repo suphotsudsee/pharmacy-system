@@ -61,10 +61,10 @@ function StatsCard({
     <div className={`stats-card ${colorClass}`}>
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
+          <p className="text-sm font-medium text-secondary mb-1">
             {label}
           </p>
-          <p className="text-3xl font-bold text-gray-900 dark:text-white animate-fade-in">
+          <p className="text-3xl font-bold text-foreground animate-fade-in">
             {value.toLocaleString()}
           </p>
           {trend && (
@@ -75,7 +75,7 @@ function StatsCard({
             >
               <span>{trend.isUp ? "↑" : "↓"}</span>
               <span>{Math.abs(trend.value)}%</span>
-              <span className="text-gray-400">จากเดือนก่อน</span>
+              <span className="text-secondary">จากเดือนก่อน</span>
             </div>
           )}
         </div>
@@ -240,10 +240,10 @@ export default function DashboardPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+          <h1 className="text-3xl font-bold text-foreground">
             📊 Dashboard
           </h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-1">
+          <p className="text-secondary mt-1">
             ภาพรวมระบบคลังยา
           </p>
         </div>
@@ -314,7 +314,7 @@ export default function DashboardPage() {
                 <div className="font-medium text-gray-900 dark:text-white">
                   {item.drug}
                 </div>
-                <div className="text-sm text-gray-500 dark:text-gray-400">
+                <div className="text-sm text-gray-700 dark:text-gray-200">
                   {item.hospital}
                 </div>
               </div>
@@ -322,7 +322,7 @@ export default function DashboardPage() {
                 <div className="font-bold text-orange-600 dark:text-orange-400">
                   {item.currentStock.toLocaleString()} {item.unit}
                 </div>
-                <div className="text-xs text-gray-500">คงเหลือ</div>
+                <div className="text-xs text-gray-600 dark:text-gray-300">คงเหลือ</div>
               </div>
             </div>
           )}
@@ -344,7 +344,7 @@ export default function DashboardPage() {
                 <div className="font-medium text-gray-900 dark:text-white">
                   {item.drug}
                 </div>
-                <div className="text-sm text-gray-500 dark:text-gray-400">
+                <div className="text-sm text-gray-700 dark:text-gray-200">
                   {item.hospital}
                 </div>
               </div>
@@ -352,7 +352,7 @@ export default function DashboardPage() {
                 <div className="font-bold text-red-600 dark:text-red-400">
                   {item.daysUntilExpiry} วัน
                 </div>
-                <div className="text-xs text-gray-500">
+                <div className="text-xs text-gray-600 dark:text-gray-300">
                   {new Date(item.expiryDate).toLocaleDateString("th-TH")}
                 </div>
               </div>
@@ -403,13 +403,13 @@ export default function DashboardPage() {
                         {req.requestNumber}
                       </a>
                     </td>
-                    <td className="text-gray-600 dark:text-gray-300">
+                    <td className="text-gray-700 dark:text-gray-200">
                       {req.hospital}
                     </td>
                     <td>
                       <StatusBadge status={req.status} />
                     </td>
-                    <td className="text-gray-500 dark:text-gray-400">
+                    <td className="text-gray-700 dark:text-gray-200">
                       {new Date(req.requestDate).toLocaleDateString("th-TH")}
                     </td>
                   </tr>

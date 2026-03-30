@@ -4,7 +4,6 @@ import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
-import { ThemeToggle } from "./ThemeToggle";
 import { useRouter } from "next/navigation";
 
 /**
@@ -12,7 +11,6 @@ import { useRouter } from "next/navigation";
  * - Clean, minimal design
  * - Responsive mobile menu
  * - Smooth animations
- * - Dark mode support
  */
 export function Navbar() {
   const router = useRouter();
@@ -85,7 +83,7 @@ export function Navbar() {
               <span className="text-2xl transition-transform group-hover:scale-110">
                 💊
               </span>
-              <span className="font-semibold hidden sm:inline transition-colors group-hover:text-primary">
+              <span className="font-semibold hidden sm:inline text-foreground transition-colors group-hover:text-primary">
                 ระบบคลังยา
               </span>
             </Link>
@@ -98,7 +96,7 @@ export function Navbar() {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`navbar-link flex items-center gap-1.5 text-sm ${
+                    className={`navbar-link flex items-center gap-1.5 text-sm text-secondary ${
                       isActive ? 'active' : ''
                     }`}
                   >
@@ -123,13 +121,11 @@ export function Navbar() {
 
           {/* Right Side Actions */}
           <div className="flex items-center space-x-2">
-            <ThemeToggle />
-
             {isAuthenticated ? (
               <>
                 {/* User Info - Desktop */}
                 <div className="hidden sm:block text-right mr-2">
-                  <div className="text-sm font-medium text-primary">
+                  <div className="text-sm font-medium text-foreground">
                     {session.user.name}
                   </div>
                   <div className="text-xs text-secondary">
@@ -148,11 +144,11 @@ export function Navbar() {
             ) : (
               <Link
                 href="/login"
-                className="btn btn-primary text-sm"
+                className="btn btn-primary text-sm flex items-center gap-1 !text-white"
+
               >
                 <span>🔐</span>
-                <span className="hidden sm:inline">เข้าสู่ระบบ</span>
-                <span className="sm:hidden">เข้าสู่ระบบ</span>
+                <span> เข้าสู่ระบบ </span>
               </Link>
             )}
 
@@ -197,7 +193,7 @@ export function Navbar() {
           mobileMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
         }`}
       >
-        <div className="px-4 pb-4 pt-2 space-y-0.5 bg-surface dark:bg-surface-secondary border-t border-separator">
+        <div className="px-4 pb-4 pt-2 space-y-0.5 bg-surface-secondary border-t border-separator">
           {navItems.map((item, index) => {
             const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
             return (
@@ -207,7 +203,7 @@ export function Navbar() {
                 className={`flex items-center gap-2 px-4 py-3 rounded-lg transition-colors ${
                   isActive 
                     ? 'bg-primary-bg text-primary font-medium' 
-                    : 'hover:bg-surface-secondary dark:hover:bg-surface'
+                    : 'text-secondary hover:bg-surface'
                 }`}
                 style={{ animationDelay: `${index * 50}ms` }}
                 onClick={() => setMobileMenuOpen(false)}
@@ -223,7 +219,7 @@ export function Navbar() {
               className={`flex items-center gap-2 px-4 py-3 rounded-lg transition-colors ${
                 pathname === '/settings'
                   ? 'bg-primary-bg text-primary font-medium'
-                  : 'hover:bg-surface-secondary dark:hover:bg-surface'
+                  : 'text-secondary hover:bg-surface'
               }`}
               onClick={() => setMobileMenuOpen(false)}
             >
@@ -236,11 +232,11 @@ export function Navbar() {
           {isAuthenticated && (
             <div className="pt-2 mt-2 border-t border-separator">
               <div className="flex items-center gap-3 px-4 py-3">
-                <div className="avatar">
+                <div className="w-8 h-8 rounded-full bg-primary-bg flex items-center justify-center">
                   <span className="text-sm">👤</span>
                 </div>
                 <div>
-                  <div className="text-sm font-medium text-primary">{session.user.name}</div>
+                  <div className="text-sm font-medium text-foreground">{session.user.name}</div>
                   <div className="text-xs text-secondary">
                     {roleLabels[userRole] || userRole}
                   </div>

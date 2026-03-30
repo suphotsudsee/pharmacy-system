@@ -55,55 +55,55 @@ function LoginForm() {
 
       {/* Username Field */}
       <div>
-        <label className="form-label" htmlFor="username">
+        <label className="form-label text-foreground block mb-2" htmlFor="username">
           👤 ชื่อผู้ใช้
         </label>
         <div className="relative">
+          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-secondary">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+          </span>
           <input
             id="username"
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
-            className="form-input pl-10"
+            className="w-full px-4 py-3 pl-12 bg-surface-secondary border border-separator rounded-lg text-foreground placeholder-tertiary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
             placeholder="กรอกชื่อผู้ใช้"
             disabled={loading}
             autoComplete="username"
           />
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-            </svg>
-          </span>
         </div>
       </div>
 
       {/* Password Field */}
       <div>
-        <label className="form-label" htmlFor="password">
+        <label className="form-label text-foreground block mb-2" htmlFor="password">
           🔒 รหัสผ่าน
         </label>
         <div className="relative">
+          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-secondary">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+          </span>
           <input
             id="password"
             type={showPassword ? "text" : "password"}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            className="form-input pl-10 pr-10"
+            className="w-full px-4 py-3 pl-12 pr-12 bg-surface-secondary border border-separator rounded-lg text-foreground placeholder-tertiary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
             placeholder="กรอกรหัสผ่าน"
             disabled={loading}
             autoComplete="current-password"
           />
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-            </svg>
-          </span>
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-secondary hover:text-tertiary transition-colors p-1"
             tabIndex={-1}
           >
             {showPassword ? (
@@ -159,19 +159,19 @@ function LoginForm() {
 function LoadingFallback() {
   return (
     <div className="flex flex-col items-center justify-center py-8">
-      <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary-500 mb-4"></div>
-      <p className="text-gray-600 dark:text-gray-300">กำลังโหลด...</p>
+      <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary mb-4"></div>
+      <p className="text-secondary">กำลังโหลด...</p>
     </div>
   );
 }
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 via-background to-secondary-50 dark:from-gray-900 dark:via-background dark:to-gray-900 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-surface-secondary via-background to-surface-secondary p-4">
       {/* Background Pattern */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary-400/20 rounded-full blur-3xl animate-pulse-soft"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-secondary-400/20 rounded-full blur-3xl animate-pulse-soft" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/20 rounded-full blur-3xl animate-pulse-soft"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-secondary/20 rounded-full blur-3xl animate-pulse-soft" style={{ animationDelay: '1s' }}></div>
       </div>
 
       {/* Login Card */}
@@ -179,13 +179,13 @@ export default function LoginPage() {
         <div className="card-elevated p-8 animate-slide-up">
           {/* Logo & Title */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl mb-4 shadow-lg">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary to-primary-dark rounded-2xl mb-4 shadow-lg">
               <span className="text-3xl">💊</span>
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+            <h1 className="text-2xl font-bold text-foreground mb-2">
               ระบบคลังยา
             </h1>
-            <p className="text-gray-500 dark:text-gray-400">
+            <p className="text-secondary">
               เข้าสู่ระบบเพื่อจัดการข้อมูล
             </p>
           </div>
@@ -194,31 +194,10 @@ export default function LoginPage() {
           <Suspense fallback={<LoadingFallback />}>
             <LoginForm />
           </Suspense>
-
-          {/* Demo Credentials */}
-          <div className="mt-6 pt-6 border-t border-gray-100 dark:border-gray-700">
-            <p className="text-center text-sm text-gray-500 dark:text-gray-400 mb-3">
-              👤 ผู้ใช้ทดสอบ
-            </p>
-            <div className="space-y-2">
-              <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                <span className="text-sm text-gray-600 dark:text-gray-300">ผู้ดูแลระบบ</span>
-                <code className="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
-                  admin / admin123
-                </code>
-              </div>
-              <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                <span className="text-sm text-gray-600 dark:text-gray-300">เภสัชกร</span>
-                <code className="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
-                  pharmacist / pharm123
-                </code>
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* Footer */}
-        <p className="text-center text-xs text-gray-400 dark:text-gray-500 mt-6">
+        <p className="text-center text-xs text-tertiary mt-6">
           © {new Date().getFullYear()} ระบบคลังยา - Pharmacy Inventory System
         </p>
       </div>
