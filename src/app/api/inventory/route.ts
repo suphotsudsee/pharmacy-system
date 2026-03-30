@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import type { DrugInventoryWhereInput, StockStatus } from '@/types/api'
-import type { Drug } from '@/generated/prisma/models'
+import type { DrugModel as Drug } from '@/generated/prisma/models'
 
 // GET /api/inventory - ดึงข้อมูลคลังยา
 export async function GET(request: NextRequest) {

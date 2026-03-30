@@ -5,15 +5,17 @@
 
 import type { Prisma } from '../generated/prisma/client'
 import type { 
-  Drug, 
-  DrugInventory, 
-  Hospital, 
-  Province,
-  FacilityType,
-  DrugCategory,
-  DrugRequest,
-  RequestStatus
+  DrugModel as Drug, 
+  DrugInventoryModel as DrugInventory, 
+  HospitalModel as Hospital, 
+  ProvinceModel as Province,
+  FacilityTypeModel as FacilityType,
+  DrugCategoryModel as DrugCategory,
+  DrugRequestModel as DrugRequest,
 } from '../generated/prisma/models'
+
+// RequestStatus is an enum, not a model
+import type { RequestStatus } from '../generated/prisma/enums'
 
 // ==================== Drug Types ====================
 // ใช้ Prisma generated types แทน any

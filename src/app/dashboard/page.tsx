@@ -2,6 +2,14 @@
 
 import { useState, useEffect } from 'react';
 
+/**
+ * 📊 Dashboard Page
+ * - Modern stats cards with gradients
+ * - Animated counters
+ * - Responsive grid layout
+ * - Dark mode optimized
+ */
+
 interface Stats {
   totalHospitals: number;
   totalDrugs: number;
@@ -35,13 +43,168 @@ interface RecentRequest {
   requestDate: string;
 }
 
+// Stats Card Component
+function StatsCard({
+  icon,
+  label,
+  value,
+  colorClass,
+  trend,
+}: {
+  icon: string;
+  label: string;
+  value: number;
+  colorClass: string;
+  trend?: { value: number; isUp: boolean };
+}) {
+  return (
+    <div className={`stats-card ${colorClass}`}>
+      <div className="flex items-start justify-between">
+        <div>
+          <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
+            {label}
+          </p>
+          <p className="text-3xl font-bold text-gray-900 dark:text-white animate-fade-in">
+            {value.toLocaleString()}
+          </p>
+          {trend && (
+            <div
+              className={`flex items-center gap-1 mt-2 text-sm ${
+                trend.isUp ? "text-green-500" : "text-red-500"
+              }`}
+            >
+              <span>{trend.isUp ? "↑" : "↓"}</span>
+              <span>{Math.abs(trend.value)}%</span>
+              <span className="text-gray-400">จากเดือนก่อน</span>
+            </div>
+          )}
+        </div>
+        <div className="text-3xl opacity-80">{icon}</div>
+      </div>
+    </div>
+  );
+}
+
+// Status Badge Component
+function StatusBadge({ status }: { status: string }) {
+  const statusConfig: Record<
+    string,
+    { label: string; className: string; icon: string }
+  > = {
+    PENDING: {
+      label: "รออนุมัติ",
+      className: "status-pending",
+      icon: "⏳",
+    },
+    APPROVED: {
+      label: "อนุมัติแล้ว",
+      className: "status-approved",
+      icon: "✅",
+    },
+    PROCESSING: {
+      label: "กำลังเตรียม",
+      className: "status-processing",
+      icon: "📦",
+    },
+    COMPLETED: {
+      label: "เสร็จสิ้น",
+      className: "status-completed",
+      icon: "🎉",
+    },
+    CANCELLED: {
+      label: "ยกเลิก",
+      className: "status-cancelled",
+      icon: "❌",
+    },
+    REJECTED: {
+      label: "ปฏิเสธ",
+      className: "status-rejected",
+      icon: "🚫",
+    },
+  };
+
+  const config = statusConfig[status] || {
+    label: status,
+    className: "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300",
+    icon: "📋",
+  };
+
+  return (
+    <span className={`badge ${config.className}`}>
+      <span className="mr-1">{config.icon}</span>
+      {config.label}
+    </span>
+  );
+}
+
+// Alert Card Component
+function AlertCard({
+  title,
+  icon,
+  iconColor,
+  items,
+  emptyText,
+  renderItem,
+}: {
+  title: string;
+  icon: string;
+  iconColor: string;
+  items: any[];
+  emptyText: string;
+  renderItem: (item: any) => React.ReactNode;
+}) {
+  return (
+    <div className="card-elevated overflow-hidden">
+      <div className="p-4 border-b border-gray-100 dark:border-gray-700">
+        <h2 className="text-lg font-bold flex items-center gap-2">
+          <span className={iconColor}>{icon}</span>
+          {title}
+        </h2>
+      </div>
+      <div className="p-4">
+        {items.length === 0 ? (
+          <div className="empty-state py-8">
+            <div className="empty-state-icon">✨</div>
+            <p className="empty-state-description">{emptyText}</p>
+          </div>
+        ) : (
+          <div className="space-y-2">{items.slice(0, 5).map(renderItem)}</div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// Loading Skeleton
+function LoadingSkeleton() {
+  return (
+    <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="animate-pulse">
+        <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/4 mb-8"></div>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+          {[...Array(6)].map((_, i) => (
+            <div
+              key={i}
+              className="h-28 bg-gray-200 dark:bg-gray-700 rounded-xl"
+            ></div>
+          ))}
+        </div>
+        <div className="grid md:grid-cols-2 gap-6">
+          <div className="h-64 bg-gray-200 dark:bg-gray-700 rounded-xl"></div>
+          <div className="h-64 bg-gray-200 dark:bg-gray-700 rounded-xl"></div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function DashboardPage() {
   const [stats, setStats] = useState<Stats | null>(null);
   const [lowStock, setLowStock] = useState<LowStockItem[]>([]);
   const [expiring, setExpiring] = useState<ExpiringItem[]>([]);
   const [recentRequests, setRecentRequests] = useState<RecentRequest[]>([]);
   const [loading, setLoading] = useState(true);
-  const [hospitalId, setHospitalId] = useState<string>('');
+  const [hospitalId, setHospitalId] = useState<string>("");
 
   useEffect(() => {
     fetchStats();
@@ -50,9 +213,9 @@ export default function DashboardPage() {
   const fetchStats = async () => {
     setLoading(true);
     try {
-      const url = hospitalId 
+      const url = hospitalId
         ? `/api/dashboard/stats?hospitalId=${hospitalId}`
-        : '/api/dashboard/stats';
+        : "/api/dashboard/stats";
       const res = await fetch(url);
       const data = await res.json();
       if (data.success) {
@@ -62,190 +225,192 @@ export default function DashboardPage() {
         setRecentRequests(data.data.recentRequests);
       }
     } catch (error) {
-      console.error('Error fetching stats:', error);
+      console.error("Error fetching stats:", error);
     } finally {
       setLoading(false);
     }
   };
 
-  const getStatusBadge = (status: string) => {
-    const badges: Record<string, string> = {
-      PENDING: 'bg-yellow-100 text-yellow-800',
-      APPROVED: 'bg-green-100 text-green-800',
-      PROCESSING: 'bg-blue-100 text-blue-800',
-      COMPLETED: 'bg-gray-100 text-gray-800',
-      CANCELLED: 'bg-red-100 text-red-800',
-      REJECTED: 'bg-red-100 text-red-800',
-    };
-    const labels: Record<string, string> = {
-      PENDING: 'รออนุมัติ',
-      APPROVED: 'อนุมัติแล้ว',
-      PROCESSING: 'กำลังเตรียม',
-      COMPLETED: 'เสร็จสิ้น',
-      CANCELLED: 'ยกเลิก',
-      REJECTED: 'ปฏิเสธ',
-    };
-    return (
-      <span className={`px-2 py-1 rounded text-sm ${badges[status] || 'bg-gray-100'}`}>
-        {labels[status] || status}
-      </span>
-    );
-  };
-
   if (loading) {
-    return (
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="animate-pulse">
-          <div className="h-8 bg-gray-200 rounded w-1/4 mb-8"></div>
-          <div className="grid grid-cols-1 md:grid-cols-6 gap-4 mb-8">
-            {[...Array(6)].map((_, i) => (
-              <div key={i} className="h-24 bg-gray-200 rounded"></div>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
+    return <LoadingSkeleton />;
   }
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">📊 Dashboard</h1>
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            📊 Dashboard
+          </h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-1">
+            ภาพรวมระบบคลังยา
+          </p>
+        </div>
         <button
           onClick={fetchStats}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          className="btn btn-primary hover-lift"
         >
-          🔄 รีเฟรช
+          <span>🔄</span>
+          <span>รีเฟรชข้อมูล</span>
         </button>
       </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
-        <div className="bg-white rounded-xl shadow p-4">
-          <div className="text-sm text-gray-500 mb-1">โรงพยาบาล</div>
-          <div className="text-3xl font-bold text-blue-600">{stats?.totalHospitals || 0}</div>
-        </div>
-        <div className="bg-white rounded-xl shadow p-4">
-          <div className="text-sm text-gray-500 mb-1">รายการยา</div>
-          <div className="text-3xl font-bold text-purple-600">{stats?.totalDrugs || 0}</div>
-        </div>
-        <div className="bg-white rounded-xl shadow p-4">
-          <div className="text-sm text-gray-500 mb-1">รายการคลัง</div>
-          <div className="text-3xl font-bold text-green-600">{stats?.totalInventory || 0}</div>
-        </div>
-        <div className="bg-white rounded-xl shadow p-4">
-          <div className="text-sm text-gray-500 mb-1">รออนุมัติ</div>
-          <div className="text-3xl font-bold text-yellow-600">{stats?.pendingRequests || 0}</div>
-        </div>
-        <div className="bg-white rounded-xl shadow p-4">
-          <div className="text-sm text-gray-500 mb-1">ยาใกล้หมด</div>
-          <div className="text-3xl font-bold text-orange-600">{stats?.lowStockItems || 0}</div>
-        </div>
-        <div className="bg-white rounded-xl shadow p-4">
-          <div className="text-sm text-gray-500 mb-1">ใกล้หมดอายุ</div>
-          <div className="text-3xl font-bold text-red-600">{stats?.expiringItems || 0}</div>
-        </div>
+        <StatsCard
+          icon="🏨"
+          label="โรงพยาบาล"
+          value={stats?.totalHospitals || 0}
+          colorClass="stats-card-blue"
+        />
+        <StatsCard
+          icon="💊"
+          label="รายการยา"
+          value={stats?.totalDrugs || 0}
+          colorClass="stats-card-purple"
+        />
+        <StatsCard
+          icon="📦"
+          label="รายการคลัง"
+          value={stats?.totalInventory || 0}
+          colorClass="stats-card-green"
+        />
+        <StatsCard
+          icon="⏳"
+          label="รออนุมัติ"
+          value={stats?.pendingRequests || 0}
+          colorClass="stats-card-yellow"
+        />
+        <StatsCard
+          icon="⚠️"
+          label="ยาใกล้หมด"
+          value={stats?.lowStockItems || 0}
+          colorClass="stats-card-orange"
+        />
+        <StatsCard
+          icon="⏰"
+          label="ใกล้หมดอายุ"
+          value={stats?.expiringItems || 0}
+          colorClass="stats-card-red"
+        />
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6">
+      {/* Alert Cards Grid */}
+      <div className="grid md:grid-cols-2 gap-6 mb-8">
         {/* Low Stock Alert */}
-        <div className="bg-white rounded-xl shadow">
-          <div className="p-4 border-b">
-            <h2 className="text-lg font-bold flex items-center">
-              <span className="text-orange-500 mr-2">⚠️</span>
-              ยาใกล้หมดสต็อก
-            </h2>
-          </div>
-          <div className="p-4">
-            {lowStock.length === 0 ? (
-              <p className="text-gray-500 text-center py-4">ไม่มียาที่ใกล้หมดสต็อก</p>
-            ) : (
-              <div className="space-y-2">
-                {lowStock.slice(0, 5).map((item) => (
-                  <div key={item.id} className="flex justify-between items-center p-2 bg-orange-50 rounded">
-                    <div>
-                      <div className="font-medium">{item.drug}</div>
-                      <div className="text-sm text-gray-500">{item.hospital}</div>
-                    </div>
-                    <div className="text-right">
-                      <div className="font-bold text-orange-600">{item.currentStock} {item.unit}</div>
-                      <div className="text-xs text-gray-500">คงเหลือ</div>
-                    </div>
-                  </div>
-                ))}
+        <AlertCard
+          title="ยาใกล้หมดสต็อก"
+          icon="⚠️"
+          iconColor="text-orange-500"
+          items={lowStock}
+          emptyText="ไม่มียาที่ใกล้หมดสต็อก 🎉"
+          renderItem={(item: LowStockItem) => (
+            <div
+              key={item.id}
+              className="flex justify-between items-center p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors"
+            >
+              <div>
+                <div className="font-medium text-gray-900 dark:text-white">
+                  {item.drug}
+                </div>
+                <div className="text-sm text-gray-500 dark:text-gray-400">
+                  {item.hospital}
+                </div>
               </div>
-            )}
-          </div>
-        </div>
+              <div className="text-right">
+                <div className="font-bold text-orange-600 dark:text-orange-400">
+                  {item.currentStock.toLocaleString()} {item.unit}
+                </div>
+                <div className="text-xs text-gray-500">คงเหลือ</div>
+              </div>
+            </div>
+          )}
+        />
 
         {/* Expiring Alert */}
-        <div className="bg-white rounded-xl shadow">
-          <div className="p-4 border-b">
-            <h2 className="text-lg font-bold flex items-center">
-              <span className="text-red-500 mr-2">⏰</span>
-              ยาใกล้หมดอายุ (6 เดือน)
-            </h2>
-          </div>
-          <div className="p-4">
-            {expiring.length === 0 ? (
-              <p className="text-gray-500 text-center py-4">ไม่มียาที่ใกล้หมดอายุ</p>
-            ) : (
-              <div className="space-y-2">
-                {expiring.slice(0, 5).map((item) => (
-                  <div key={item.id} className="flex justify-between items-center p-2 bg-red-50 rounded">
-                    <div>
-                      <div className="font-medium">{item.drug}</div>
-                      <div className="text-sm text-gray-500">{item.hospital}</div>
-                    </div>
-                    <div className="text-right">
-                      <div className="font-bold text-red-600">{item.daysUntilExpiry} วัน</div>
-                      <div className="text-xs text-gray-500">{new Date(item.expiryDate).toLocaleDateString('th-TH')}</div>
-                    </div>
-                  </div>
-                ))}
+        <AlertCard
+          title="ยาใกล้หมดอายุ (6 เดือน)"
+          icon="⏰"
+          iconColor="text-red-500"
+          items={expiring}
+          emptyText="ไม่มียาที่ใกล้หมดอายุ 🎉"
+          renderItem={(item: ExpiringItem) => (
+            <div
+              key={item.id}
+              className="flex justify-between items-center p-3 bg-red-50 dark:bg-red-900/20 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
+            >
+              <div>
+                <div className="font-medium text-gray-900 dark:text-white">
+                  {item.drug}
+                </div>
+                <div className="text-sm text-gray-500 dark:text-gray-400">
+                  {item.hospital}
+                </div>
               </div>
-            )}
-          </div>
-        </div>
+              <div className="text-right">
+                <div className="font-bold text-red-600 dark:text-red-400">
+                  {item.daysUntilExpiry} วัน
+                </div>
+                <div className="text-xs text-gray-500">
+                  {new Date(item.expiryDate).toLocaleDateString("th-TH")}
+                </div>
+              </div>
+            </div>
+          )}
+        />
       </div>
 
-      {/* Recent Requests */}
-      <div className="mt-6 bg-white rounded-xl shadow">
-        <div className="p-4 border-b">
-          <h2 className="text-lg font-bold flex items-center">
-            <span className="mr-2">📝</span>
+      {/* Recent Requests Table */}
+      <div className="table-container">
+        <div className="p-4 border-b border-gray-100 dark:border-gray-700">
+          <h2 className="text-lg font-bold flex items-center gap-2">
+            <span>📝</span>
             ใบเบิกยาล่าสุด
           </h2>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50">
+            <thead>
               <tr>
-                <th className="px-4 py-2 text-left">เลขที่</th>
-                <th className="px-4 py-2 text-left">โรงพยาบาล</th>
-                <th className="px-4 py-2 text-left">สถานะ</th>
-                <th className="px-4 py-2 text-left">วันที่</th>
+                <th>เลขที่</th>
+                <th>โรงพยาบาล</th>
+                <th>สถานะ</th>
+                <th>วันที่</th>
               </tr>
             </thead>
             <tbody>
               {recentRequests.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="px-4 py-8 text-center text-gray-500">
-                    ยังไม่มีใบเบิกยา
+                  <td colSpan={4}>
+                    <div className="empty-state py-8">
+                      <div className="empty-state-icon">📋</div>
+                      <p className="empty-state-title">ยังไม่มีใบเบิกยา</p>
+                      <p className="empty-state-description">
+                        เริ่มสร้างใบเบิกยาใหม่ได้เลย
+                      </p>
+                    </div>
                   </td>
                 </tr>
               ) : (
                 recentRequests.map((req) => (
-                  <tr key={req.id} className="border-b hover:bg-gray-50">
-                    <td className="px-4 py-2">
-                      <a href={`/requests/${req.id}`} className="text-blue-600 hover:underline">
+                  <tr key={req.id}>
+                    <td>
+                      <a
+                        href={`/requests/${req.id}`}
+                        className="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 font-medium hover:underline transition-colors"
+                      >
                         {req.requestNumber}
                       </a>
                     </td>
-                    <td className="px-4 py-2">{req.hospital}</td>
-                    <td className="px-4 py-2">{getStatusBadge(req.status)}</td>
-                    <td className="px-4 py-2">
-                      {new Date(req.requestDate).toLocaleDateString('th-TH')}
+                    <td className="text-gray-600 dark:text-gray-300">
+                      {req.hospital}
+                    </td>
+                    <td>
+                      <StatusBadge status={req.status} />
+                    </td>
+                    <td className="text-gray-500 dark:text-gray-400">
+                      {new Date(req.requestDate).toLocaleDateString("th-TH")}
                     </td>
                   </tr>
                 ))
@@ -253,6 +418,54 @@ export default function DashboardPage() {
             </tbody>
           </table>
         </div>
+      </div>
+
+      {/* Quick Actions */}
+      <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
+        <a
+          href="/drugs/new"
+          className="card p-4 hover-lift text-center group"
+        >
+          <div className="text-3xl mb-2 group-hover:scale-110 transition-transform">
+            ➕
+          </div>
+          <div className="font-medium text-gray-700 dark:text-gray-200">
+            เพิ่มยาใหม่
+          </div>
+        </a>
+        <a
+          href="/inventory/new"
+          className="card p-4 hover-lift text-center group"
+        >
+          <div className="text-3xl mb-2 group-hover:scale-110 transition-transform">
+            📦
+          </div>
+          <div className="font-medium text-gray-700 dark:text-gray-200">
+            เพิ่มสต็อกยา
+          </div>
+        </a>
+        <a
+          href="/requests/new"
+          className="card p-4 hover-lift text-center group"
+        >
+          <div className="text-3xl mb-2 group-hover:scale-110 transition-transform">
+            📝
+          </div>
+          <div className="font-medium text-gray-700 dark:text-gray-200">
+            สร้างใบเบิกยา
+          </div>
+        </a>
+        <a
+          href="/import/new"
+          className="card p-4 hover-lift text-center group"
+        >
+          <div className="text-3xl mb-2 group-hover:scale-110 transition-transform">
+            📥
+          </div>
+          <div className="font-medium text-gray-700 dark:text-gray-200">
+            นำเข้าข้อมูล
+          </div>
+        </a>
       </div>
     </div>
   );

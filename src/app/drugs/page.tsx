@@ -4,6 +4,14 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 
+/**
+ * 💊 Drugs Page - รายการยา
+ * - Modern table design with hover effects
+ * - Advanced search and filters
+ * - Pagination with smooth transitions
+ * - Dark mode optimized
+ */
+
 interface Drug {
   id: number;
   drugCode: string;
@@ -27,19 +35,51 @@ interface Pagination {
   totalPages: number;
 }
 
+// Status Badge Component
+function StatusBadge({ isActive }: { isActive: boolean }) {
+  return (
+    <span
+      className={`badge ${
+        isActive
+          ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
+          : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
+      }`}
+    >
+      {isActive ? "✅ ใช้งาน" : "❌ ปิดการใช้งาน"}
+    </span>
+  );
+}
+
+// Loading Skeleton
+function TableSkeleton() {
+  return (
+    <div className="p-4 space-y-4">
+      {[...Array(5)].map((_, i) => (
+        <div key={i} className="flex items-center gap-4">
+          <div className="skeleton h-4 w-24"></div>
+          <div className="skeleton h-4 w-32 flex-1"></div>
+          <div className="skeleton h-4 w-20"></div>
+          <div className="skeleton h-4 w-16"></div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function DrugsPage() {
   const { data: session, status } = useSession();
   const isAuthenticated = status === 'authenticated';
-  
+
   const [drugs, setDrugs] = useState<Drug[]>([]);
   const [pagination, setPagination] = useState<Pagination>({
     page: 1,
     limit: 50,
     total: 0,
-    totalPages: 0
+    totalPages: 0,
   });
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [searchInput, setSearchInput] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
   const [categories, setCategories] = useState<{ id: number; name: string }[]>([]);
 
@@ -85,120 +125,206 @@ export default function DrugsPage() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
+    setSearch(searchInput);
     setPagination(prev => ({ ...prev, page: 1 }));
     fetchDrugs();
   };
 
-  const statusColors: Record<string, string> = {
-    ACTIVE: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
-    INACTIVE: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
+  const clearFilters = () => {
+    setSearch('');
+    setSearchInput('');
+    setCategoryFilter('');
+    setPagination(prev => ({ ...prev, page: 1 }));
+    fetchDrugs();
   };
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">💊 รายการยา</h1>
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            💊 รายการยา
+          </h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-1">
+            จัดการข้อมูลยาในระบบ
+          </p>
+        </div>
         {isAuthenticated && (
           <Link
             href="/drugs/new"
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500"
+            className="btn btn-primary hover-lift"
           >
-            + เพิ่มยา
+            <span>➕</span>
+            <span>เพิ่มยา</span>
           </Link>
         )}
       </div>
 
-      {/* Filters */}
-      <form onSubmit={handleSearch} className="mb-6">
-        <div className="flex flex-wrap gap-4">
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="ค้นหายา..."
-            className="flex-1 border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-          />
-          <select
-            value={categoryFilter}
-            onChange={(e) => setCategoryFilter(e.target.value)}
-            className="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-          >
-            <option value="">ทุกหมวด</option>
-            {categories.map((cat) => (
-              <option key={cat.id} value={cat.id}>{cat.name}</option>
-            ))}
-          </select>
-          <button
-            type="submit"
-            className="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 dark:bg-gray-600 dark:hover:bg-gray-500"
-          >
-            ค้นหา
-          </button>
-        </div>
-      </form>
+      {/* Search & Filters */}
+      <div className="card mb-6">
+        <form onSubmit={handleSearch} className="p-4">
+          <div className="flex flex-col md:flex-row gap-4">
+            {/* Search Input */}
+            <div className="flex-1 relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </span>
+              <input
+                type="text"
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                placeholder="ค้นหายา..."
+                className="form-input pl-10"
+              />
+            </div>
 
-      {/* Stats */}
-      <div className="bg-blue-50 dark:bg-blue-900/30 rounded-lg p-4 mb-6">
-        <div className="text-sm text-blue-800 dark:text-blue-300">
-          จำนวนรายการยาทั้งหมด: <span className="font-bold">{pagination.total}</span> รายการ
+            {/* Category Filter */}
+            <select
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+              className="form-input w-full md:w-48"
+            >
+              <option value="">ทุกหมวด</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.id}>{cat.name}</option>
+              ))}
+            </select>
+
+            {/* Action Buttons */}
+            <div className="flex gap-2">
+              <button
+                type="submit"
+                className="btn btn-primary"
+              >
+                🔍 ค้นหา
+              </button>
+              {(search || categoryFilter) && (
+                <button
+                  type="button"
+                  onClick={clearFilters}
+                  className="btn btn-ghost"
+                >
+                  ✖️ ล้าง
+                </button>
+              )}
+            </div>
+          </div>
+        </form>
+      </div>
+
+      {/* Stats Summary */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+        <div className="stats-card stats-card-blue">
+          <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">จำนวนรายการยา</div>
+          <div className="text-2xl font-bold text-gray-900 dark:text-white">
+            {pagination.total.toLocaleString()}
+          </div>
+        </div>
+        <div className="stats-card stats-card-green">
+          <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">ใช้งานอยู่</div>
+          <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+            {drugs.filter(d => d.isActive).length}
+          </div>
+        </div>
+        <div className="stats-card stats-card-purple">
+          <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">หมวดหมู่</div>
+          <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">
+            {categories.length}
+          </div>
         </div>
       </div>
 
       {/* Table */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow overflow-hidden">
+      <div className="table-container">
         {loading ? (
-          <div className="p-8 text-center text-gray-500 dark:text-gray-400">กำลังโหลด...</div>
+          <TableSkeleton />
         ) : drugs.length === 0 ? (
-          <div className="p-8 text-center text-gray-500 dark:text-gray-400">ไม่พบข้อมูล</div>
+          <div className="empty-state py-12">
+            <div className="empty-state-icon">💊</div>
+            <p className="empty-state-title">ไม่พบรายการยา</p>
+            <p className="empty-state-description">
+              {search || categoryFilter
+                ? 'ลองเปลี่ยนคำค้นหาหรือตัวกรอง'
+                : 'เริ่มเพิ่มยาใหม่ได้เลย'}
+            </p>
+            {isAuthenticated && !search && !categoryFilter && (
+              <Link href="/drugs/new" className="btn btn-primary mt-4">
+                ➕ เพิ่มยาใหม่
+              </Link>
+            )}
+          </div>
         ) : (
           <table className="w-full">
-            <thead className="bg-gray-50 dark:bg-gray-700">
+            <thead>
               <tr>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">รหัส</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">ชื่อยา</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">หมวด</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">รูปแบบ</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">หน่วย</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">จุดสั่งซื้อ</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">สถานะ</th>
-                {isAuthenticated && (
-                  <th className="px-4 py-3 text-right text-sm font-medium text-gray-700 dark:text-gray-300">การจัดการ</th>
-                )}
+                <th>รหัส</th>
+                <th>ชื่อยา</th>
+                <th>หมวด</th>
+                <th>รูปแบบ</th>
+                <th>หน่วย</th>
+                <th>จุดสั่งซื้อ</th>
+                <th>สถานะ</th>
+                {isAuthenticated && <th className="text-right">การจัดการ</th>}
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+            <tbody>
               {drugs.map((drug) => (
-                <tr key={drug.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                  <td className="px-4 py-3 text-gray-600 dark:text-gray-300">{drug.drugCode}</td>
-                  <td className="px-4 py-3">
-                    <div className="font-medium text-gray-900 dark:text-white">{drug.name}</div>
+                <tr key={drug.id} className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                  <td className="font-mono text-sm text-gray-600 dark:text-gray-300">
+                    {drug.drugCode}
+                  </td>
+                  <td>
+                    <div className="font-medium text-gray-900 dark:text-white">
+                      {drug.name}
+                    </div>
                     {drug.genericName && (
-                      <div className="text-sm text-gray-500 dark:text-gray-400">{drug.genericName}</div>
+                      <div className="text-sm text-gray-500 dark:text-gray-400">
+                        {drug.genericName}
+                      </div>
                     )}
                   </td>
-                  <td className="px-4 py-3 text-gray-600 dark:text-gray-300">{drug.category?.name || '-'}</td>
-                  <td className="px-4 py-3 text-gray-600 dark:text-gray-300">{drug.dosageForm || '-'}</td>
-                  <td className="px-4 py-3 text-gray-600 dark:text-gray-300">{drug.unit}</td>
-                  <td className="px-4 py-3 text-gray-600 dark:text-gray-300">{drug.reorderPoint.toLocaleString()}</td>
-                  <td className="px-4 py-3">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${drug.isActive ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'}`}>
-                      {drug.isActive ? 'ใช้งาน' : 'ปิดการใช้งาน'}
+                  <td>
+                    <span className="text-gray-600 dark:text-gray-300">
+                      {drug.category?.name || '-'}
                     </span>
                   </td>
+                  <td>
+                    <span className="text-gray-600 dark:text-gray-300">
+                      {drug.dosageForm || '-'}
+                    </span>
+                  </td>
+                  <td>
+                    <span className="badge bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300">
+                      {drug.unit}
+                    </span>
+                  </td>
+                  <td className="text-gray-600 dark:text-gray-300">
+                    {drug.reorderPoint.toLocaleString()}
+                  </td>
+                  <td>
+                    <StatusBadge isActive={drug.isActive} />
+                  </td>
                   {isAuthenticated && (
-                    <td className="px-4 py-3 text-right">
-                      <Link
-                        href={`/drugs/${drug.id}`}
-                        className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 mr-3"
-                      >
-                        ดู
-                      </Link>
-                      <Link
-                        href={`/drugs/${drug.id}`}
-                        className="text-yellow-600 hover:text-yellow-800 dark:text-yellow-400 dark:hover:text-yellow-300 mr-3"
-                      >
-                        แก้ไข
-                      </Link>
+                    <td className="text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <Link
+                          href={`/drugs/${drug.id}`}
+                          className="btn btn-ghost text-sm !px-2 !py-1"
+                          title="ดูรายละเอียด"
+                        >
+                          👁️
+                        </Link>
+                        <Link
+                          href={`/drugs/${drug.id}`}
+                          className="btn btn-ghost text-sm !px-2 !py-1"
+                          title="แก้ไข"
+                        >
+                          ✏️
+                        </Link>
+                      </div>
                     </td>
                   )}
                 </tr>
@@ -210,29 +336,36 @@ export default function DrugsPage() {
 
       {/* Pagination */}
       {pagination.totalPages > 1 && (
-        <div className="flex justify-center gap-2 mt-6">
+        <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mt-6">
           <button
             onClick={() => setPagination(prev => ({ ...prev, page: prev.page - 1 }))}
             disabled={pagination.page === 1}
-            className="px-4 py-2 border rounded-lg disabled:opacity-50 dark:border-gray-600 dark:text-gray-300"
+            className="btn btn-ghost disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            ก่อนหน้า
+            ← ก่อนหน้า
           </button>
-          <span className="px-4 py-2 dark:text-gray-300">
-            หน้า {pagination.page} / {pagination.totalPages}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="text-gray-500 dark:text-gray-400">
+              หน้า {pagination.page} / {pagination.totalPages}
+            </span>
+            <span className="text-gray-400">|</span>
+            <span className="text-gray-500 dark:text-gray-400">
+              ทั้งหมด {pagination.total.toLocaleString()} รายการ
+            </span>
+          </div>
           <button
             onClick={() => setPagination(prev => ({ ...prev, page: prev.page + 1 }))}
             disabled={pagination.page === pagination.totalPages}
-            className="px-4 py-2 border rounded-lg disabled:opacity-50 dark:border-gray-600 dark:text-gray-300"
+            className="btn btn-ghost disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            ถัดไป
+            ถัดไป →
           </button>
         </div>
       )}
 
+      {/* Back Link */}
       <div className="mt-6">
-        <Link href="/" className="text-blue-600 hover:underline dark:text-blue-400">
+        <Link href="/" className="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 transition-colors">
           ← กลับหน้าหลัก
         </Link>
       </div>

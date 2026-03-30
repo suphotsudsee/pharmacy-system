@@ -38,6 +38,12 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
       root.classList.remove('dark');
       root.style.colorScheme = 'light';
     }
+    
+    // Update meta theme-color
+    const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+    if (metaThemeColor) {
+      metaThemeColor.setAttribute('content', newTheme === 'dark' ? '#000000' : '#ffffff');
+    }
   };
 
   useEffect(() => {
@@ -56,6 +62,24 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     }
     
     setMounted(true);
+  }, []);
+
+  // Listen for system theme changes
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    
+    const handleChange = (e: MediaQueryListEvent) => {
+      const savedTheme = localStorage.getItem('theme');
+      // Only auto-switch if user hasn't explicitly set a preference
+      if (!savedTheme) {
+        const newTheme = e.matches ? 'dark' : 'light';
+        setThemeState(newTheme);
+        applyTheme(newTheme);
+      }
+    };
+
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
 
   const setTheme = (newTheme: Theme) => {
